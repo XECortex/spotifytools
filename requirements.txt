@@ -1,0 +1,4 @@
+pygobject
+requests
+beautifulsoup4
+lxml
