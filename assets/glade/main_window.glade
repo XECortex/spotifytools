@@ -212,14 +212,9 @@ Album</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="track_length">
-                            <property name="name">track_length</property>
+                          <object class="GtkSeparator">
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
                             <property name="can-focus">False</property>
-                            <property name="tooltip-text" translatable="yes">Track length</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">00:00</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -228,21 +223,10 @@ Album</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSeparator">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="halign">center</property>
+                            <property name="halign">start</property>
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkButton">
@@ -330,7 +314,7 @@ Album</property>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="icon-name">link-symbolic</property>
+                                    <property name="icon-name">url-copy</property>
                                   </object>
                                 </child>
                               </object>
@@ -343,6 +327,22 @@ Album</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
+                            <property name="fill">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="track_length">
+                            <property name="name">track_length</property>
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can-focus">False</property>
+                            <property name="tooltip-text" translatable="yes">Track length</property>
+                            <property name="halign">start</property>
+                            <property name="label" translatable="yes">00:00</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
                             <property name="fill">False</property>
                             <property name="position">3</property>
                           </packing>

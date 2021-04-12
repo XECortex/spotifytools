@@ -31,6 +31,8 @@ class MainWindow():
     
     
     def switch_page(self, page):
+        self.builder.get_object('window').present()
+        
         if not page in ['playing', 'lyrics', 'preferences']:
             print(f'[WARN] Invalid page name "{page}"')
             return
@@ -67,10 +69,10 @@ class MainWindow():
     def _window_main(self):
         # Run while the window is opened
         print('[INFO] Started window thread')
-        thread = threading.currentThread()
+
         old_playback_status = 'Paused'
         
-        while getattr(thread, 'running', True):
+        while getattr(threading.currentThread(), 'running', True):
             playback_status = util.get_playback_status()
             
             if old_playback_status != playback_status:

@@ -10,7 +10,7 @@ from gi.repository import Gtk, Notify
 from app import App
 
 
-VERSION = '1.1'
+VERSION = '1.2'
 
 if __name__ == '__main__':
     print('[INFO] Checking version')

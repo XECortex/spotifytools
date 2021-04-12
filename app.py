@@ -1,7 +1,7 @@
 
 import threading
-import gi
 import time
+import gi
 import util
 
 gi.require_version('Gtk', '3.0')
@@ -51,28 +51,46 @@ class App():
     def _main(self):
         print('[INFO] Started main thread')
         
-        thread = threading.currentThread()
-        old_metadata = util.get_spotify_metadata()
-        tmp = old_metadata
+        metadata = util.get_spotify_metadata()
+        old_metadata = metadata
+        update_timout = False
+        mute_update = 0
+        mute_update_delta = 1
         
-        while getattr(thread, 'running', True):
+        
+        def _update():
+            if metadata['running']:
+                if f'{metadata["title"]} {metadata["artist"][0]}' == 'Unknown Unknown': return
+            else: util.spotify_pactl(False)
+                
+            print(f'\n\n[INFO] {time.strftime("%H:%M:%S", time.localtime())} Song metadata updated\n')
+                
+            if self.window_open: self.queue.put(metadata)
+            
+            update_timout = False
+        
+        
+        while getattr(threading.currentThread(), 'running', True):
             metadata = util.get_spotify_metadata()
             
             # If the playing song changed
-            if metadata == old_metadata:
-                last_change = time.time()
-            
-            if time.time() - last_change > 0.1 or self.request_update:
-                if metadata['running'] and f'{metadata["title"]} {metadata["artist"][0]}' == 'Unknown Unknown': continue
+            if metadata != old_metadata:
+                mute_update_delta = 1
+                                
+                if update_timout: update_timout.cancel()
                 
-                print('[INFO] Song metadata updated')
-                
-                if self.window_open: self.queue.put(metadata)
-                
+                update_timout = threading.Timer(0.2, _update)                
                 old_metadata = metadata
-                self.request_update = False
+                
+                update_timout.start()
             
-            # Mute Spotify if an ad is playing
-            # TODO: Time this
-            if metadata['running']: util.spotify_pactl(metadata['is_ad'])
-            else: util.spotify_pactl(False)
+            if self.request_update:
+                self.request_update = False
+                
+                _update()
+            
+            if metadata['running'] and time.time() - mute_update > mute_update_delta / 100 and mute_update_delta <= 64:
+                mute_update_delta *= 2
+                mute_update = time.time()
+                
+                util.spotify_pactl(metadata['is_ad'])
