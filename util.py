@@ -5,6 +5,7 @@ import urllib
 import requests
 import re
 
+from enum import Enum
 from bs4 import BeautifulSoup
 from subprocess import check_output
 
@@ -16,32 +17,37 @@ def launch_spotify():
 
 
 def get_spotify_metadata():
-    def _get_dbus_property(name):
-        # Get a property from the DBus
-        try:
-            return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'Metadata')[name]
-        except Exception as exception:
-            raise exception
-    
-    
     metadata = {}
     
     # If Spotify is running, this will return the metadata of the currently playing track,
     # else, it will return that Spotufy is NOT running
     try:
-        metadata['trackid'] = _get_dbus_property('mpris:trackid') or 'spotify:tack:0000000000000000000000'
-        metadata['title'] = _get_dbus_property('xesam:title') or 'Unknown'
-        metadata['artist'] = _get_dbus_property('xesam:artist') if _get_dbus_property('xesam:artist')[0] else ['Unknown']
-        metadata['album'] = _get_dbus_property('xesam:album') or 'Unknown'
-        metadata['cover'] = _get_dbus_property('mpris:artUrl').replace('open.spotify.com', 'i.scdn.co') or 'assets/cover.png'
+        raw = dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+        
+        metadata['trackid'] = raw['mpris:trackid'] or 'spotify:tack:0000000000000000000000'
+        metadata['url'] = raw['xesam:url'] or 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC'
+        metadata['title'] = raw['xesam:title'] or 'Unknown'
+        metadata['artist'] = raw['xesam:artist'] if raw['xesam:artist'][0] else ['Unknown']
+        metadata['album'] = raw['xesam:album'] or 'Unknown'
+        metadata['cover'] = raw['mpris:artUrl'].replace('open.spotify.com', 'i.scdn.co') or 'assets/cover.png'
+        metadata['length'] = raw['mpris:length'] or 0000000
         
         # Detect if Spotify is playing an ad
-        metadata['is_ad'] = metadata['title'] in ['Unknown', 'Advertisement', 'Ad', 'Spotify', 'spotify'] and metadata['artist'][0] in ['Unknown', 'Spotify']
+        metadata['is_ad'] = metadata['trackid'].startswith('spotify:ad')
         metadata['running'] = True
+        
+        return metadata
     except Exception:
-        metadata['running'] = False
-    
-    return metadata
+        return { 'running': False }
+
+
+def spotify_player():
+    return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
+
+
+def get_playback_status():
+    try: return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'PlaybackStatus')
+    except: return 'Paused'
 
 
 def google_lyrics(query):
@@ -69,8 +75,5 @@ def spotify_pactl(mute):
         line = str(line.decode())
         
         # Mute Spotify
-        if line.startswith('Sink Input #'):
-            current_id = line[12:]
-        elif line.endswith('binary = "spotify"'):
-            print(f'[INFO] {"Muting" if mute else "Unmuting"} player client #{current_id}')
-            os.system(f'pactl set-sink-input-mute "{current_id}" {"1" if mute else "0"}')
+        if line.startswith('Sink Input #'): current_id = line[12:]
+        elif line.endswith('binary = "spotify"'): os.system(f'pactl set-sink-input-mute "{current_id}" {"1" if mute else "0"}')

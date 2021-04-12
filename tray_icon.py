@@ -27,11 +27,11 @@ class TrayIcon():
         # Build the system tray menu from the glade file
         builder = Gtk.Builder()
         handlers = {
-            'open': self._open_main_window,
-            'open_lyrics': self._open_lyrics,
-            'open_preferences': self._open_preferences,
-            'launch_spotify': self._launch_spotify,
-            'quit': self._quit
+            'open': lambda menu_item: self.app.open_main_window('playing'),
+            'open_lyrics': lambda menu_item: self.app.open_main_window('lyrics'),
+            'open_preferences': lambda menu_item: self.app.open_main_window('preferences'),
+            'launch_spotify': lambda menu_item: util.launch_spotify(),
+            'quit': lambda menu_item: self.app.main_quit(),
         }
         
         builder.add_from_file('assets/glade/tray_menu.glade')
@@ -41,23 +41,3 @@ class TrayIcon():
         menu.show_all()
         
         return menu
-
-    
-    def _open_main_window(self, menu_item):
-        self.app.open_main_window('playing')
-    
-    
-    def _open_lyrics(self, menu_item):
-        self.app.open_main_window('lyrics')
-    
-    
-    def _open_preferences(self, menu_item):
-        self.app.open_main_window('preferences')
-    
-    
-    def _launch_spotify(self, menu_item):
-        util.launch_spotify()
-    
-    
-    def _quit(self, menu_item):
-        self.app.main_quit()

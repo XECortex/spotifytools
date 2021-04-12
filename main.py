@@ -6,12 +6,11 @@ import requests
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
 
-from gi.repository import Gtk
-from gi.repository import Notify
+from gi.repository import Gtk, Notify
 from app import App
 
 
-VERSION = open('version', 'r').read()
+VERSION = '1.1'
 
 if __name__ == '__main__':
     print('[INFO] Checking version')

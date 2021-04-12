@@ -92,7 +92,7 @@
             <property name="halign">center</property>
             <property name="margin-left">6</property>
             <property name="margin-right">6</property>
-            <property name="margin-bottom">6</property>
+            <property name="margin-bottom">12</property>
             <property name="stack">content</property>
           </object>
           <packing>
