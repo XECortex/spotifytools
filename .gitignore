@@ -4,3 +4,6 @@ __pycache__/
 # Glade backup files
 .glade~
 .glade#
+
+# Desktop launcher files
+.desktop
