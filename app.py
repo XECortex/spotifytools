@@ -1,13 +1,12 @@
 
-import threading
-import time
 import gi
+import threading
 import util
+import time
 
 gi.require_version('Gtk', '3.0')
-gi.require_version('Notify', '0.7')
 
-from gi.repository import Gtk, Notify
+from gi.repository import Gtk
 from queue import Queue
 from tray_icon import TrayIcon
 from main_window import MainWindow
@@ -29,7 +28,7 @@ class App():
 
 
 	def main_quit(self):
-		print('[INFO] Stopping main thread')
+		util.Logger.info('Stopping main thread')
 
 		# Stop the main thread, unmute Spotify and quit
 		Gtk.main_quit()
@@ -41,7 +40,7 @@ class App():
 
 
 	def open_main_window(self, page):
-		print(f'[INFO] Opening main window on stack page "{page}"')
+		util.Logger.info(f'Opening main window on stack page "{page}"')
 
 		# Open the main window
 		if not self.window_open: self.main_window = MainWindow(self, page)
@@ -49,7 +48,7 @@ class App():
 
 
 	def _main(self):
-		print('[INFO] Started main thread')
+		util.Logger.info('Started main thread')
 
 		metadata = util.get_spotify_metadata()
 		old_metadata = metadata
@@ -63,7 +62,8 @@ class App():
 				if f'{metadata["title"]} {metadata["artist"][0]}' == 'Unknown Unknown': return
 			else: util.spotify_pactl(False)
 
-			print(f'\n\n[INFO] {time.strftime("%H:%M:%S", time.localtime())} Song metadata updated\n')
+			util.Logger.debug('Song metadata updated')
+			util.Logger.hidebug(metadata)
 
 			if self.window_open: self.queue.put(metadata)
 
@@ -76,6 +76,9 @@ class App():
 			# If the playing song changed
 			if metadata != old_metadata:
 				mute_update_delta = 1
+
+				if metadata['running'] and old_metadata['running']:
+					if old_metadata['is_ad'] and not metadata['is_ad']: mute_update_delta = 200
 
 				if update_timout: update_timout.cancel()
 
@@ -90,6 +93,8 @@ class App():
 				_update()
 
 			if metadata['running'] and time.time() - mute_update > mute_update_delta / 100 and mute_update_delta <= 64:
+				if mute_update_delta == 200: mute_update_delta = 1
+
 				mute_update_delta *= 2
 				mute_update = time.time()
 

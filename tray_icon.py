@@ -5,8 +5,7 @@ import util
 gi.require_version('AppIndicator3', '0.1')
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import AppIndicator3
-from gi.repository import Gtk
+from gi.repository import AppIndicator3, Gtk
 
 
 APPINDICATOR_ID = 'spotifytools-tray'

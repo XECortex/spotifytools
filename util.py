@@ -5,19 +5,28 @@ import urllib
 import requests
 import re
 
-from enum import Enum
+from datetime import datetime
 from bs4 import BeautifulSoup
 from subprocess import check_output
 
 
-def get_dirname(file_path):
-    return os.path.dirname(os.path.realpath(file_path))
+def get_timestamp(): return datetime.now().strftime('%H:%M:%S.%f')
+def get_dirname(file_path): return os.path.dirname(os.path.realpath(file_path))
+def spotify_player(): return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
+
+
+class Logger():
+	def hidebug(msg): print(f'\033[30;1mH ({get_timestamp()}) \033[0;30m{msg}\033[0m')
+	def debug(msg): print(f'\033[90;1mD ({get_timestamp()}) \033[0;90m{msg}\033[0m')
+	def info(msg): print(f'\033[1mI ({get_timestamp()}) \033[0m{msg}')
+	def warn(msg): print(f'\033[33;1mW ({get_timestamp()}) \033[0;33m{msg}\033[0m')
+	def error(msg): print(f'\033[91;1mE ({get_timestamp()}) \033[0;91m{msg}\033[0m')
 
 
 def launch_spotify():
-	print('[INFO] Launching Spotify')
+	Logger.info('Launching Spotify')
 	# Launch Spotify without any console logging and disown the process
-	os.system('spotify >/dev/null 2>&1 &')
+	os.system('spotify >/dev/null 2>&1 & disown')
 
 
 def get_spotify_metadata():
@@ -45,10 +54,6 @@ def get_spotify_metadata():
 		return { 'running': False }
 
 
-def spotify_player():
-	return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
-
-
 def get_playback_status():
 	try: return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'PlaybackStatus')
 	except: return 'Paused'
@@ -56,7 +61,7 @@ def get_playback_status():
 
 def google_lyrics(query):
 	# Search a song with Google to get its lyrics
-	print(f'[INFO] Searching lyrics for "{query}"...')
+	Logger.info(f'Searching lyrics for "{query}"...')
 
 	url = f'http://www.google.com/search?q={urllib.parse.quote(query)}%20lyrics'
 	result = requests.get(url, headers={ 'User-agent': 'python', 'Accept-Language': 'en-US, en;q=0.8, *;q=0.7', 'Connection': 'keep-alive' }).text
@@ -80,4 +85,6 @@ def spotify_pactl(mute):
 
 		# Mute Spotify
 		if line.startswith('Sink Input #'): current_id = line[12:]
-		elif line.endswith('binary = "spotify"'): os.system(f'pactl set-sink-input-mute "{current_id}" {"1" if mute else "0"}')
+		elif line.endswith('binary = "spotify"'):
+			Logger.hidebug(f'{"Muting" if mute else "Unmuting"} sink-input #{current_id}')
+			os.system(f'pactl set-sink-input-mute "{current_id}" {"1" if mute else "0"}')

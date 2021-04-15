@@ -1,17 +1,16 @@
 
 import gi
-import os
 import threading
-import requests
-import dbus
 import util
+import os
+import requests
 
 gi.require_version('Gtk', '3.0')
 
-from pathlib import Path
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 from datetime import timedelta
 from math import floor
-from gi.repository import Gtk, Gdk, GLib, Gio, GdkPixbuf, Pango
+from pathlib import Path
 
 
 class MainWindow():
@@ -34,7 +33,7 @@ class MainWindow():
 		self.builder.get_object('window').present()
 
 		if not page in ['playing', 'lyrics', 'preferences']:
-			print(f'[WARN] Invalid page name "{page}"')
+			util.Logger.warn(f'Invalid page name "{page}"')
 			return
 
 		self.builder.get_object('content').set_visible_child_name(page)
@@ -44,7 +43,7 @@ class MainWindow():
 
 
 	def _build_window(self):
-		print('[INFO] Building main window')
+		util.Logger.debug('Building main window')
 
 		# Build the window from the glade file
 		self.builder = Gtk.Builder()
@@ -68,7 +67,7 @@ class MainWindow():
 
 	def _window_main(self):
 		# Run while the window is opened
-		print('[INFO] Started window thread')
+		util.Logger.debug('Started window thread')
 
 		old_playback_status = 'Paused'
 
@@ -120,18 +119,18 @@ class MainWindow():
 			cover_cache = str(Path.home()) + '/.cache/spotifytools/covers'
 
 			if not os.path.isdir(cover_cache):
-				print(f'[INFO] Attempting to create cache directory "{cover_cache}"')
+				util.Logger.warn(f'Cache directory "{cover_cache}" does not exist, attempting to create')
 				os.makedirs(cover_cache)
 
 			if not os.path.isfile(cover_cache + f'/{url[24:]}.png'):
-				print(f'[INFO] Downloading cover from "{url}"')
+				util.Logger.debug(f'Downloading cover from "{url}"')
 
 				response = requests.get(url)
 
 				f = open(cover_cache + f'/{url[24:]}.png', 'wb')
 				f.write(response.content)
 				f.close()
-			else: print(f'[INFO] Loading cached cover from "{cover_cache}/{url[24:]}.png"')
+			else: util.Logger.debug(f'Loading cached cover from "{cover_cache}/{url[24:]}.png"')
 
 			cover_path = cover_cache + f'/{url[24:]}.png'
 		else: cover_path = url
@@ -159,7 +158,7 @@ class MainWindow():
 
 		text = util.google_lyrics(query)
 
-		if self.lyric_update_threads != lyric_update_thread_id: return print('[WARN] Lyric search cancelled: detected another thread')
+		if self.lyric_update_threads != lyric_update_thread_id: return util.Logger.warn('Lyric search cancelled: detected another thread')
 
 		GLib.idle_add(self.builder.get_object('lyrics_loading').stop)
 		GLib.idle_add(self.builder.get_object('lyrics_loading').hide)
@@ -178,7 +177,7 @@ class MainWindow():
 
 
 	def _destroy(self):
-		print('[INFO] Stopping window thread')
+		util.Logger.debug('Stopping window thread')
 
 		self.window_main_thread.running = False
 

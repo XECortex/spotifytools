@@ -1,4 +1,4 @@
-# SpotifyTools - <i>v1.0</i>
+# SpotifyTools - <i>v1.4</i>
 A GTK application written in Python that displays song lyrics and mutes Spotify advertisements
 
 ## Installation
@@ -12,6 +12,17 @@ If there are updates available, run `git pull` in the SpotifyTools directory
 ## Usage
 Use the desktop launcher or run `main.py` with `python3`
 
-## Screenshot
+```
+usage: spotifytools [-h] [-l] [-t]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l, --launch-spotify  launch Spotify on program start
+  -t, --tray-only       don't show the main window on startup, useful if you want to start spotifytools when you log in
+
+flag names may change in the future
+```
+
+## Screenshots
 ![Screenshot](assets/screenshot.png)\
 <sup>(Colors may differ with other GTK themes)</sup>
