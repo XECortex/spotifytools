@@ -75,10 +75,13 @@ class App():
 
 			# If the playing song changed
 			if metadata != old_metadata:
-				mute_update_delta = 1
+				if not mute_update_delta == 200:
+					mute_update_delta = 1
 
-				if metadata['running'] and old_metadata['running']:
-					if old_metadata['is_ad'] and not metadata['is_ad']: mute_update_delta = 200
+					if metadata['running'] and old_metadata['running']:
+						if old_metadata['is_ad'] and not metadata['is_ad']:
+							mute_update = time.time()
+							mute_update_delta = 200
 
 				if update_timout: update_timout.cancel()
 
@@ -92,7 +95,7 @@ class App():
 
 				_update()
 
-			if metadata['running'] and time.time() - mute_update > mute_update_delta / 100 and mute_update_delta <= 64:
+			if metadata['running'] and time.time() - mute_update > mute_update_delta / 100 and (mute_update_delta <= 64 or mute_update_delta == 200):
 				if mute_update_delta == 200: mute_update_delta = 1
 
 				mute_update_delta *= 2

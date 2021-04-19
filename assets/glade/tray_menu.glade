@@ -1,101 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.38.2 -->
 <interface>
-	<requires lib="gtk+" version="3.24"/>
-	<object class="GtkImage" id="application-exit">
-		<property name="visible">True</property>
-		<property name="can-focus">False</property>
-		<property name="icon-name">application-exit</property>
-	</object>
-	<object class="GtkImage" id="document-open">
-		<property name="visible">True</property>
-		<property name="can-focus">False</property>
-		<property name="icon-name">document-open</property>
-	</object>
-	<object class="GtkImage" id="document-properties">
-		<property name="visible">True</property>
-		<property name="can-focus">False</property>
-		<property name="icon-name">document-properties</property>
-	</object>
-	<object class="GtkImage" id="search">
-		<property name="visible">True</property>
-		<property name="can-focus">False</property>
-		<property name="icon-name">edit-find</property>
-	</object>
-	<object class="GtkImage" id="spotify-indicator">
-		<property name="visible">True</property>
-		<property name="can-focus">False</property>
-		<property name="icon-name">spotify-indicator</property>
-	</object>
-	<object class="GtkMenu" id="tray_menu">
-		<property name="visible">True</property>
-		<property name="can-focus">False</property>
-		<child>
-			<object class="GtkImageMenuItem" id="open">
-				<property name="label" translatable="yes">Open</property>
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-				<property name="use-underline">True</property>
-				<property name="image">document-open</property>
-				<property name="use-stock">False</property>
-				<signal name="activate" handler="open" swapped="no"/>
-			</object>
-		</child>
-		<child>
-			<object class="GtkImageMenuItem" id="lyrics">
-				<property name="label" translatable="yes">Search Lyrics</property>
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-				<property name="use-underline">True</property>
-				<property name="image">search</property>
-				<property name="use-stock">False</property>
-				<signal name="activate" handler="open_lyrics" swapped="no"/>
-			</object>
-		</child>
-		<child>
-			<object class="GtkImageMenuItem" id="preferences">
-				<property name="label" translatable="yes">Preferences</property>
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-				<property name="use-underline">True</property>
-				<property name="image">document-properties</property>
-				<property name="use-stock">False</property>
-				<signal name="activate" handler="open_preferences" swapped="no"/>
-			</object>
-		</child>
-		<child>
-			<object class="GtkSeparatorMenuItem">
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-			</object>
-		</child>
-		<child>
-			<object class="GtkImageMenuItem" id="spotify">
-				<property name="label" translatable="yes">Launch Spotify now</property>
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-				<property name="use-underline">True</property>
-				<property name="image">spotify-indicator</property>
-				<property name="use-stock">False</property>
-				<signal name="activate" handler="launch_spotify" swapped="no"/>
-			</object>
-		</child>
-		<child>
-			<object class="GtkSeparatorMenuItem">
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-			</object>
-		</child>
-		<child>
-			<object class="GtkImageMenuItem" id="quit">
-				<property name="label" translatable="yes">Quit</property>
-				<property name="visible">True</property>
-				<property name="can-focus">False</property>
-				<property name="use-underline">True</property>
-				<property name="image">application-exit</property>
-				<property name="use-stock">False</property>
-				<signal name="activate" handler="quit" swapped="no"/>
-			</object>
-		</child>
-	</object>
+  <requires lib="gtk+" version="3.24"/>
+  <object class="GtkImage" id="application-exit">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">application-exit</property>
+  </object>
+  <object class="GtkImage" id="document-open">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">document-open</property>
+  </object>
+  <object class="GtkImage" id="document-properties">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">document-properties</property>
+  </object>
+  <object class="GtkImage" id="search">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">edit-find</property>
+  </object>
+  <object class="GtkImage" id="spotify-indicator">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">spotify-indicator</property>
+  </object>
+  <object class="GtkMenu" id="tray_menu">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="open">
+        <property name="label" translatable="yes">Open</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="use-underline">True</property>
+        <property name="image">document-open</property>
+        <property name="use-stock">False</property>
+        <signal name="activate" handler="open" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="lyrics">
+        <property name="label" translatable="yes">Search Lyrics</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="use-underline">True</property>
+        <property name="image">search</property>
+        <property name="use-stock">False</property>
+        <signal name="activate" handler="open_lyrics" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="preferences">
+        <property name="label" translatable="yes">Preferences</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="use-underline">True</property>
+        <property name="image">document-properties</property>
+        <property name="use-stock">False</property>
+        <signal name="activate" handler="open_preferences" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="spotify">
+        <property name="label" translatable="yes">Launch Spotify now</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="use-underline">True</property>
+        <property name="image">spotify-indicator</property>
+        <property name="use-stock">False</property>
+        <signal name="activate" handler="launch_spotify" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem">
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="quit">
+        <property name="label" translatable="yes">Quit</property>
+        <property name="visible">True</property>
+        <property name="can-focus">False</property>
+        <property name="use-underline">True</property>
+        <property name="image">application-exit</property>
+        <property name="use-stock">False</property>
+        <signal name="activate" handler="quit" swapped="no"/>
+      </object>
+    </child>
+  </object>
 </interface>

@@ -61,6 +61,10 @@ class MainWindow():
 		self.builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/main_window.glade')
 		self.builder.connect_signals(handlers)
 
+		# Fallback icon for 'url-copy'
+		if not Gtk.IconTheme.get_default().has_icon('url-copy'):
+			self.builder.get_object('url-copy').set_from_icon_name('edit-copy', Gtk.IconSize.BUTTON)
+
 		self.builder.get_object('window').show_all()
 		self.builder.get_object('icon').set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(f'{util.get_dirname(__file__)}/assets/icons/spotifytools.svg').scale_simple(22, 22, 1))
 

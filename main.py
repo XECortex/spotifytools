@@ -49,9 +49,17 @@ if __name__ == '__main__':
 		Notify.Notification.new('Update', f'A new version of SpotifyTools is available on GitHub, check out\n<tt>https://github.com/XECortex/spotifytools</tt>\n\n<i>Current version: {version} -> {up_version}</i>', 'system-software-update').show()
 
 	# Run the App
-	if flags.launch_spotify: util.launch_spotify()
+	try:
+		if flags.launch_spotify: util.launch_spotify()
 
-	app = App()
+		app = App()
 
-	if not flags.tray_only: app.open_main_window('playing')
-	Gtk.main()
+		if not flags.tray_only: app.open_main_window('playing')
+
+		Gtk.main()
+	except KeyboardInterrupt:
+		print('')
+		util.Logger.error('Stopping (KeyboardInterrupt)')
+		app.main_quit()
+
+	sys.exit(1)

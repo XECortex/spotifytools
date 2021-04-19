@@ -36,6 +36,10 @@ class TrayIcon():
 		builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/tray_menu.glade')
 		builder.connect_signals(handlers)
 
+		# Fallback icon for 'spotify-indicator'
+		if not Gtk.IconTheme.get_default().has_icon('spotify-indicator'):
+			builder.get_object('spotify-indicator').set_from_icon_name('media-optical', Gtk.IconSize.BUTTON)
+
 		menu = builder.get_object('tray_menu')
 		menu.show_all()
 
