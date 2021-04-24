@@ -16,12 +16,12 @@ def spotify_player(): return dbus.Interface(dbus.SessionBus().get_object('org.mp
 
 
 class Logger():
-	def hidebug(msg): print(f'\033[34m{get_timestamp()}\033[0m: \033[30;1mHIDEBUG\033[0;30m: {msg}\033[0m')
-	# def hidebug(msg): pass
-	def debug(msg): print(f'\033[34m{get_timestamp()}\033[0m: \033[90;1mDEBUG\033[0;90m: {msg}\033[0m')
-	def info(msg): print(f'\033[34m{get_timestamp()}\033[0m: \033[1mINFO\033[0m: {msg}')
-	def warn(msg): print(f'\033[34m{get_timestamp()}\033[0m: \033[33;1mWARN\033[0;33m: {msg}\033[0m')
-	def error(msg): print(f'\033[34m{get_timestamp()}\033[0m: \033[91;1mERROR\033[0;91m: {msg}\033[0m')
+	def hidebug(msg): print(f'{get_timestamp()}: \033[1;30mDEBUG\033[0;30m: {msg}\033[0m')
+	def hidebug(msg): pass
+	def debug(msg): print(f'{get_timestamp()}: \033[1;90mDEBUG\033[0m: {msg}\033[0m')
+	def info(msg): print(f'{get_timestamp()}: \033[1;34mINFO\033[0m: {msg}')
+	def warn(msg): print(f'{get_timestamp()}: \033[1;33mWARN\033[0m: {msg}\033[0m')
+	def error(msg): print(f'{get_timestamp()}: \033[1;91mERROR\033[0m: {msg}\033[0m')
 
 
 def launch_spotify():

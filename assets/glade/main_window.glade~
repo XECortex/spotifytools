@@ -505,6 +505,7 @@ Artist</property>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="border-width">6</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
                     <child>
@@ -523,6 +524,7 @@ Artist</property>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="border-width">6</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
                     <child>
@@ -563,6 +565,7 @@ Artist</property>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
+                    <property name="border-width">6</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
                     <child>
@@ -602,6 +605,7 @@ Artist</property>
                 <child>
                   <object class="GtkListBoxRow">
                     <property name="can-focus">True</property>
+                    <property name="border-width">6</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
                     <child>

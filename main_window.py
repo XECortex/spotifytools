@@ -120,23 +120,23 @@ class MainWindow():
 
 	def _set_cover(self, url):
 		if url.startswith('https://'):
-			cover_cache = str(Path.home()) + '/.cache/spotifytools/covers'
+			cover_cache = os.path.join(os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')), 'spotifytools', 'covers')
 
 			if not os.path.isdir(cover_cache):
 				util.Logger.warn(f'Cache directory "{cover_cache}" does not exist, attempting to create')
 				os.makedirs(cover_cache)
 
-			if not os.path.isfile(cover_cache + f'/{url[24:]}.png'):
+			cover_path = os.path.join(cover_cache, f'{url[24:]}.png')
+
+			if not os.path.isfile(cover_path):
 				util.Logger.debug(f'Downloading cover from "{url}"')
 
 				response = requests.get(url)
 
-				f = open(cover_cache + f'/{url[24:]}.png', 'wb')
+				f = open(cover_path, 'wb')
 				f.write(response.content)
 				f.close()
-			else: util.Logger.debug(f'Loading cached cover from "{cover_cache}/{url[24:]}.png"')
-
-			cover_path = cover_cache + f'/{url[24:]}.png'
+			else: util.Logger.debug(f'Loading cached cover from "{cover_path}"')
 		else: cover_path = url
 
 		GLib.idle_add(self.builder.get_object('cover').set_from_pixbuf, GdkPixbuf.Pixbuf.new_from_file(cover_path).scale_simple(128, 128, 1))

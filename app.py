@@ -13,7 +13,8 @@ from main_window import MainWindow
 
 
 class App():
-	def __init__(self):
+	def __init__(self, config):
+		self.config = config
 		self.window_open = False
 		self.request_update = False
 		self.queue = Queue()
@@ -57,17 +58,17 @@ class App():
 		mute_update_delta = 1
 
 
-		def _update():
+		def _update(requested=False):
+			update_timout = False
+
 			if metadata['running']:
-				if f'{metadata["title"]} {metadata["artist"][0]}' == 'Unknown Unknown': return
+				if f'{metadata["title"]} {metadata["artist"][0]}' == 'Unknown Unknown' and not requested: return
 			else: util.spotify_pactl(False)
 
 			util.Logger.debug('Song metadata updated')
 			util.Logger.hidebug(metadata)
 
 			if self.window_open: self.queue.put(metadata)
-
-			update_timout = False
 
 
 		while getattr(threading.currentThread(), 'running', True):
@@ -93,7 +94,7 @@ class App():
 			if self.request_update:
 				self.request_update = False
 
-				_update()
+				_update(True)
 
 			if metadata['running'] and time.time() - mute_update > mute_update_delta / 100 and (mute_update_delta <= 64 or mute_update_delta == 200):
 				if mute_update_delta == 200: mute_update_delta = 1
