@@ -10,13 +10,13 @@ from bs4 import BeautifulSoup
 from subprocess import check_output
 
 
-def get_timestamp(): return datetime.now().strftime('%H:%M:%S.%f')
+def get_timestamp(): return datetime.now().strftime('%H:%M:%S') # .%f
 def get_dirname(file_path): return os.path.dirname(os.path.realpath(file_path))
 def spotify_player(): return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
 
 
 class Logger():
-	def hidebug(msg): print(f'{get_timestamp()}: \033[1;30mDEBUG\033[0;30m: {msg}\033[0m')
+	# def hidebug(msg): print(f'{get_timestamp()}: \033[1;30mDEBUG\033[0;30m: {msg}\033[0m')
 	def hidebug(msg): pass
 	def debug(msg): print(f'{get_timestamp()}: \033[1;90mDEBUG\033[0m: {msg}\033[0m')
 	def info(msg): print(f'{get_timestamp()}: \033[1;34mINFO\033[0m: {msg}')

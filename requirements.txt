@@ -1,4 +1,5 @@
 pygobject
+watchdog
 requests
 beautifulsoup4
 lxml

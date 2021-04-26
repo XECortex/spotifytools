@@ -512,6 +512,7 @@ Artist</property>
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="label" translatable="yes">&lt;span size="xx-large"&gt;&lt;b&gt;PREFERENCES&lt;/b&gt;&lt;/span&gt;
+&lt;i&gt;(now working)&lt;/i&gt;
 &lt;span color="#f80"&gt;&lt;i&gt;More coming soon!&lt;/i&gt;&lt;/span&gt;</property>
                         <property name="use-markup">True</property>
                         <property name="justify">center</property>
@@ -535,7 +536,7 @@ Artist</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="halign">start</property>
-                            <property name="label" translatable="yes">Show main window on startup</property>
+                            <property name="label" translatable="yes">Hide main window on startup</property>
                             <property name="use-markup">True</property>
                           </object>
                           <packing>
@@ -545,9 +546,10 @@ Artist</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="preferences_show_window">
+                          <object class="GtkSwitch" id="preferences_hide_window">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <signal name="state-set" handler="update_preferences_hide_window" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -588,6 +590,7 @@ Artist</property>
                           <object class="GtkSwitch" id="preferences_launch_spotify">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <signal name="state-set" handler="update_preferences_launch_spotify" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -602,6 +605,7 @@ Artist</property>
                 <child>
                   <object class="GtkListBoxRow">
                     <property name="can-focus">True</property>
+                    <property name="no-show-all">True</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
                     <child>
@@ -648,6 +652,7 @@ Artist</property>
                 <property name="name">preferences</property>
                 <property name="title" translatable="yes">Preferences</property>
                 <property name="position">2</property>
+                <property name="needs-attention">True</property>
               </packing>
             </child>
           </object>

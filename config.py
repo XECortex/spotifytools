@@ -5,15 +5,31 @@ import util
 import sys
 import argparse
 
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
 from shutil import copy
+
+
+class ConfigUpdateEventHandler(FileSystemEventHandler):
+	def __init__(self, config): self.config = config
+	def on_any_event(self, event): self.config.load()
+
+
 
 class Config():
 	def __init__(self):
-		self._parse_args()
-
 		self.values = {}
+		self.changes = 0
 		self.config = configparser.ConfigParser()
+		self.file_watcher = Observer()
 
+		self._parse_args()
+		self.load()
+		self.file_watcher.schedule(ConfigUpdateEventHandler(self), self.config_dir)
+		self.file_watcher.start()
+
+
+	def load(self):
 		# Config dir and config file path
 		if self.args.config:
 			self.config_path = self.args.config[0]
@@ -40,6 +56,8 @@ class Config():
 
 		self._read_config()
 
+		self.changes += 1
+
 
 	def _parse_args(self):
 		# Argument parser
@@ -55,9 +73,12 @@ class Config():
 
 
 	def _write_config(self):
-		f = open(self.config_path, 'w')
-		f.write(open(f'{util.get_dirname(__file__)}/assets/default_config.ini', 'r').read())
-		f.close()
+		with open(self.config_path, 'w') as f:
+			default_config_file = open(f'{util.get_dirname(__file__)}/assets/default_config.ini', 'r')
+
+			f.write(default_config_file.read())
+			default_config_file.close()
+			f.close()
 
 
 	def _read_config(self, rec=False):
@@ -82,13 +103,20 @@ class Config():
 			self._read_config(True)
 
 
-	def _get(self, section, key, fallback):
-		return self.config.get(section, key, fallback=fallback)
+	def _get(self, section, option, fallback): return self.config.get(section, option, fallback=fallback)
+	def _str_to_bool(self, str): return str.lower() in ['true', 'on', 'yes']
+	def _overwrite(self, a, b, c): return False if c else True if b else a
 
 
-	def _str_to_bool(self, str):
-		return str.lower() in ['true', 'on', 'yes']
+	def update_option(self, section, option, value):
+		if not self.config.has_section(section): self.config.add_section(section)
+
+		with open(self.config_path, 'w') as f:
+			self.config.set(section, option, value)
+			self.config.write(f)
+			f.close()
 
 
-	def _overwrite(self, a, b, c):
-		return False if c else True if b else a
+	def stop_file_watcher(self):
+		self.file_watcher.stop()
+		self.file_watcher.join()

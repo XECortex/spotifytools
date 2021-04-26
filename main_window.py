@@ -14,9 +14,10 @@ from pathlib import Path
 
 
 class MainWindow():
-	def __init__(self, app, page):
+	def __init__(self, app, page, config):
 		self.lyrics_searched = False
 		self.app = app
+		self.config = config
 		self.app.window_open = True
 
 		self._build_window()
@@ -55,7 +56,9 @@ class MainWindow():
 			'play_pause': lambda button: self._play_pause(button),
 			'skip': lambda button: util.spotify_player().Next(),
 			'previous': lambda button: util.spotify_player().Previous(),
-			'copy_song_url': lambda button: Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(self.metadata['url'], -1)
+			'copy_song_url': lambda button: Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(self.metadata['url'], -1),
+			'update_preferences_hide_window': lambda switch, state: self.config.update_option('config', 'hide-window', str(state).lower()),
+			'update_preferences_launch_spotify': lambda switch, state: self.config.update_option('config', 'launch-spotify', str(state).lower())
 		}
 
 		self.builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/main_window.glade')
@@ -74,8 +77,16 @@ class MainWindow():
 		util.Logger.debug('Started window thread')
 
 		old_playback_status = 'Paused'
+		old_config_changes = 0
 
 		while getattr(threading.currentThread(), 'running', True):
+			if self.config.changes != old_config_changes:
+				old_config_changes = self.config.changes
+
+				# Update the preferences page
+				self.builder.get_object('preferences_hide_window').set_active(self.config.values['hide_window'])
+				self.builder.get_object('preferences_launch_spotify').set_active(self.config.values['launch_spotify'])
+
 			playback_status = util.get_playback_status()
 
 			if old_playback_status != playback_status:
@@ -133,9 +144,9 @@ class MainWindow():
 
 				response = requests.get(url)
 
-				f = open(cover_path, 'wb')
-				f.write(response.content)
-				f.close()
+				with open(cover_path, 'wb') as f:
+					f.write(response.content)
+					f.close()
 			else: util.Logger.debug(f'Loading cached cover from "{cover_path}"')
 		else: cover_path = url
 

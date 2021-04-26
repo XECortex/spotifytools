@@ -29,10 +29,10 @@ class App():
 
 
 	def main_quit(self):
-		util.Logger.info('Stopping main thread')
-
 		# Stop the main thread, unmute Spotify and quit
+		util.Logger.info('Stopping main thread')
 		Gtk.main_quit()
+		self.config.stop_file_watcher()
 
 		self.main_thread.running = False
 
@@ -44,7 +44,7 @@ class App():
 		util.Logger.info(f'Opening main window on stack page "{page}"')
 
 		# Open the main window
-		if not self.window_open: self.main_window = MainWindow(self, page)
+		if not self.window_open: self.main_window = MainWindow(self, page, self.config)
 		else: self.main_window.switch_page(page)
 
 

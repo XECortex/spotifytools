@@ -34,7 +34,14 @@ if __name__ == '__main__':
 	util.Logger.info('Checking version')
 	Notify.init('SpotifyTools')
 
-	version = open(f'{util.get_dirname(__file__)}/version').read() or '1.0'
+	f = open(f'{util.get_dirname(__file__)}/version', 'r')
+	version = '1.0'
+
+	try: version = f.read() or '1.0'
+	except: util.Logger.error('Version file not found or not accessable')
+
+	f.close()
+
 	up_version = requests.get('https://raw.githubusercontent.com/XECortex/spotifytools/main/version').text
 
 	# Show a desktop notification if a new version is available
