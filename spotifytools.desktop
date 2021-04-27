@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=SpotifyTools
-Icon=/home/cortex/Documents/spotifytools/assets/icons/spotifytools.svg
-Categories=Audio;Music;Player;AudioVideo;
-Comment=Display song lyrics and mute Spotify advertisements
-Exec=/home/cortex/Documents/spotifytools/main.py

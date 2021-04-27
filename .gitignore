@@ -1,9 +1,12 @@
+# Python test file
+t.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 
 # Glade backup files
-.glade~
-.glade#
+*~
+*#
 
 # Desktop launcher files
-.desktop
+*desktop

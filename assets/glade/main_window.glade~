@@ -103,6 +103,7 @@
             <property name="margin-right">6</property>
             <property name="margin-bottom">6</property>
             <property name="transition-type">slide-left-right</property>
+            <signal name="notify::visible-child" handler="page_change" swapped="no"/>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -505,15 +506,13 @@ Artist</property>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="border-width">6</property>
                     <property name="activatable">False</property>
                     <property name="selectable">False</property>
                     <child>
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">&lt;span size="xx-large"&gt;&lt;b&gt;PREFERENCES&lt;/b&gt;&lt;/span&gt;
-&lt;span color="#f80"&gt;&lt;i&gt;More coming soon!&lt;/i&gt;&lt;/span&gt;</property>
+                        <property name="label" translatable="yes">&lt;span size="xx-large"&gt;&lt;b&gt;PREFERENCES&lt;/b&gt;&lt;/span&gt;</property>
                         <property name="use-markup">True</property>
                         <property name="justify">center</property>
                       </object>
@@ -524,9 +523,18 @@ Artist</property>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="border-width">6</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -537,7 +545,7 @@ Artist</property>
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="halign">start</property>
-                            <property name="label" translatable="yes">Show main window on startup</property>
+                            <property name="label" translatable="yes">Hide main window on startup</property>
                             <property name="use-markup">True</property>
                           </object>
                           <packing>
@@ -547,9 +555,10 @@ Artist</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkSwitch" id="preferences_show_window">
+                          <object class="GtkSwitch" id="preferences_hide_window">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <signal name="notify::active" handler="update_preferences_hide_window" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -565,9 +574,6 @@ Artist</property>
                   <object class="GtkListBoxRow">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="border-width">6</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
@@ -591,6 +597,7 @@ Artist</property>
                           <object class="GtkSwitch" id="preferences_launch_spotify">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
+                            <signal name="notify::active" handler="update_preferences_launch_spotify" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -604,38 +611,85 @@ Artist</property>
                 </child>
                 <child>
                   <object class="GtkListBoxRow">
+                    <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="border-width">6</property>
-                    <property name="activatable">False</property>
-                    <property name="selectable">False</property>
                     <child>
                       <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel">
+                          <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="halign">start</property>
-                            <property name="label" translatable="yes">Visible page on startup</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">Enable album cover art caching</property>
+                              </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkSwitch" id="preferences_cache_covers">
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <signal name="notify::active" handler="update_preferences_cache_covers" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
-                            <property name="expand">True</property>
+                            <property name="expand">False</property>
                             <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxText" id="preferences_startup_page">
+                          <object class="GtkBox">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="active">0</property>
-                            <property name="active-id">0</property>
-                            <items>
-                              <item id="0" translatable="yes">Playing</item>
-                              <item id="1" translatable="yes">Lyrics</item>
-                            </items>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkButton">
+                                <property name="label" translatable="yes">Clear cache</property>
+                                <property name="visible">True</property>
+                                <property name="can-focus">True</property>
+                                <property name="receives-default">True</property>
+                                <property name="halign">start</property>
+                                <signal name="clicked" handler="clear_cache" swapped="no"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="preferences_cache_size">
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can-focus">False</property>
+                                <property name="halign">start</property>
+                                <property name="label" translatable="yes">0.0B</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>

@@ -1,6 +1,7 @@
 
 import os
 import dbus
+import colors
 import urllib
 import requests
 import re
@@ -12,16 +13,24 @@ from subprocess import check_output
 
 def get_timestamp(): return datetime.now().strftime('%H:%M:%S') # .%f
 def get_dirname(file_path): return os.path.dirname(os.path.realpath(file_path))
+def get_dir_size(path): return sum(os.path.getsize(os.path.join(path, f)) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)))
 def spotify_player(): return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
 
 
 class Logger():
-	# def hidebug(msg): print(f'{get_timestamp()}: \033[1;30mDEBUG\033[0;30m: {msg}\033[0m')
-	def hidebug(msg): pass
-	def debug(msg): print(f'{get_timestamp()}: \033[1;90mDEBUG\033[0m: {msg}\033[0m')
-	def info(msg): print(f'{get_timestamp()}: \033[1;34mINFO\033[0m: {msg}')
-	def warn(msg): print(f'{get_timestamp()}: \033[1;33mWARN\033[0m: {msg}\033[0m')
-	def error(msg): print(f'{get_timestamp()}: \033[1;91mERROR\033[0m: {msg}\033[0m')
+	def hidebug(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BLACK}DEBUG{colors.RESET + colors.BLACK}: {msg}{colors.RESET}')
+	def hidebug (msg): pass
+	def debug(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BRIGHT_BLACK}DEBUG{colors.RESET}: {msg}{colors.RESET}')
+	def info(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BLUE}INFO{colors.RESET}: {msg}{colors.RESET}')
+	def warn(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.YELLOW}WARN{colors.RESET}: {msg}{colors.RESET}')
+	def error(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BRIGHT_RED}ERROR{colors.RESET}: {msg}{colors.RESET}')
+
+
+def human_readable_size(size, decimal_places = 1):
+	for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']:
+		if size < 1024.0 or unit == 'PiB': break
+		size /= 1024.0
+	return f'{size:.{decimal_places}f} {unit}'
 
 
 def launch_spotify():
@@ -34,7 +43,7 @@ def get_spotify_metadata():
 	metadata = {}
 
 	# If Spotify is running, this will return the metadata of the currently playing track,
-	# else, it will return that Spotufy is NOT running
+	# else, it will return that Spotify is NOT running
 	try:
 		raw = dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'Metadata')
 

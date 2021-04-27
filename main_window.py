@@ -1,8 +1,9 @@
 
 import gi
 import threading
-import util
 import os
+import util
+import shutil
 import requests
 
 gi.require_version('Gtk', '3.0')
@@ -19,6 +20,7 @@ class MainWindow():
 		self.app = app
 		self.config = config
 		self.app.window_open = True
+		self.cover_cache = os.path.join(os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')), 'spotifytools')
 
 		self._build_window()
 		self.switch_page(page)
@@ -50,6 +52,7 @@ class MainWindow():
 		self.builder = Gtk.Builder()
 		handlers = {
 			'destroy': lambda window: self._destroy(),
+			'page_change': lambda stack, visible_child: self._page_change(stack, visible_child),
 			'launch_spotify': lambda button: util.launch_spotify(),
 			'search_lyrics': lambda entry: threading.Thread(target=self._search_lyrics, args={ entry }).start(),
 			'spotify_lyrics': lambda button: threading.Thread(target=self._spotify_lyrics).start(),
@@ -58,18 +61,24 @@ class MainWindow():
 			'previous': lambda button: util.spotify_player().Previous(),
 			'copy_song_url': lambda button: Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(self.metadata['url'], -1),
 			'update_preferences_hide_window': lambda switch, state: self.config.update_option('config', 'hide-window', str(state).lower()),
-			'update_preferences_launch_spotify': lambda switch, state: self.config.update_option('config', 'launch-spotify', str(state).lower())
+			'update_preferences_launch_spotify': lambda switch, state: self.config.update_option('config', 'launch-spotify', str(state).lower()),
+			'update_preferences_cache_covers': lambda switch, state: self.config.update_option('config', 'cache-covers', str(state).lower()),
+			'clear_cache': lambda button: self._clear_cache()
 		}
 
 		self.builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/main_window.glade')
-		self.builder.connect_signals(handlers)
+		self.builder.get_object('icon').set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(f'{util.get_dirname(__file__)}/assets/icons/spotifytools.svg').scale_simple(22, 22, 1))
+
+		self.builder.get_object('preferences_hide_window').set_active(self.config.values['hide_window'])
+		self.builder.get_object('preferences_launch_spotify').set_active(self.config.values['launch_spotify'])
+		self.builder.get_object('preferences_cache_covers').set_active(self.config.values['cache_covers'])
 
 		# Fallback icon for 'url-copy'
 		if not Gtk.IconTheme.get_default().has_icon('url-copy'):
 			self.builder.get_object('url-copy').set_from_icon_name('edit-copy', Gtk.IconSize.BUTTON)
 
+		self.builder.connect_signals(handlers)
 		self.builder.get_object('window').show_all()
-		self.builder.get_object('icon').set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(f'{util.get_dirname(__file__)}/assets/icons/spotifytools.svg').scale_simple(22, 22, 1))
 
 
 	def _window_main(self):
@@ -83,9 +92,12 @@ class MainWindow():
 			if self.config.changes != old_config_changes:
 				old_config_changes = self.config.changes
 
-				# Update the preferences page
-				self.builder.get_object('preferences_hide_window').set_active(self.config.values['hide_window'])
-				self.builder.get_object('preferences_launch_spotify').set_active(self.config.values['launch_spotify'])
+				GLib.idle_add(self.builder.get_object('preferences_hide_window').set_active, self.config.values['hide_window'])
+				GLib.idle_add(self.builder.get_object('preferences_launch_spotify').set_active, self.config.values['launch_spotify'])
+				GLib.idle_add(self.builder.get_object('preferences_cache_covers').set_active, self.config.values['cache_covers'])
+
+				self._update_preferences_cache_size()
+
 
 			playback_status = util.get_playback_status()
 
@@ -131,23 +143,29 @@ class MainWindow():
 
 	def _set_cover(self, url):
 		if url.startswith('https://'):
-			cover_cache = os.path.join(os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')), 'spotifytools', 'covers')
+			if self.config.values['cache_covers']:
+				if not os.path.isdir(self.cover_cache):
+					util.Logger.warn(f'Cache directory "{self.cover_cache}" does not exist, attempting to create')
+					os.makedirs(self.cover_cache)
 
-			if not os.path.isdir(cover_cache):
-				util.Logger.warn(f'Cache directory "{cover_cache}" does not exist, attempting to create')
-				os.makedirs(cover_cache)
+				cover_path = os.path.join(self.cover_cache, f'{url[24:]}.png')
 
-			cover_path = os.path.join(cover_cache, f'{url[24:]}.png')
+				if not os.path.isfile(cover_path):
+					util.Logger.debug(f'Downloading cover from "{url}"')
 
-			if not os.path.isfile(cover_path):
+					response = requests.get(url)
+
+					with open(cover_path, 'wb') as f: f.write(response.content)
+
+					self._update_preferences_cache_size()
+				else: util.Logger.debug(f'Loading cached cover from "{cover_path}"')
+			else:
 				util.Logger.debug(f'Downloading cover from "{url}"')
 
+				cover_path = '/tmp/cover.png'
 				response = requests.get(url)
 
-				with open(cover_path, 'wb') as f:
-					f.write(response.content)
-					f.close()
-			else: util.Logger.debug(f'Loading cached cover from "{cover_path}"')
+				with open(cover_path, 'wb') as f: f.write(response.content)
 		else: cover_path = url
 
 		GLib.idle_add(self.builder.get_object('cover').set_from_pixbuf, GdkPixbuf.Pixbuf.new_from_file(cover_path).scale_simple(128, 128, 1))
@@ -222,5 +240,12 @@ class MainWindow():
 		self._update_play_pause_indicator()
 
 
-	def _update_play_pause_indicator(self):
-		GLib.idle_add(self.builder.get_object('play_pause_indicator').set_from_icon_name, f'media-playback-{"start" if util.get_playback_status() == "Paused" else "pause"}', Gtk.IconSize.BUTTON)
+	def _clear_cache(self):
+		util.Logger.info('Clearing cache directory')
+		shutil.rmtree(self.cover_cache, ignore_errors=True)
+		self._update_preferences_cache_size()
+
+
+	def _update_play_pause_indicator(self): GLib.idle_add(self.builder.get_object('play_pause_indicator').set_from_icon_name, f'media-playback-{"start" if util.get_playback_status() == "Paused" else "pause"}', Gtk.IconSize.BUTTON)
+	def _update_preferences_cache_size(self): GLib.idle_add(self.builder.get_object('preferences_cache_size').set_text, util.human_readable_size(util.get_dir_size(self.cover_cache)) if os.path.exists(self.cover_cache) else '0.0 B')
+	def _page_change(self, stack, visible_child): pass

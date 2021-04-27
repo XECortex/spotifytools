@@ -1,5 +1,6 @@
 pygobject
 watchdog
 requests
-beautifulsoup4
+configupdater
 lxml
+beautifulsoup4
