@@ -108,7 +108,7 @@ class Config():
 			self._write_config()
 			self._read_config(True)
 
-	def _str_to_bool(self, str): return str.lower() in ['true', 'on', 'yes']
+	def _str_to_bool(self, s): return s.lower() in ['true', 'on', 'yes']
 	def _overwrite(self, a, b, c): return False if c else True if b else a
 
 
