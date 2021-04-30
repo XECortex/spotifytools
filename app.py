@@ -59,8 +59,6 @@ class App():
 
 
 		def _update(requested=False):
-			update_timout = False
-
 			if metadata['running']:
 				if f'{metadata["title"]} {metadata["artist"][0]}' == 'Unknown Unknown' and not requested: return
 			else: util.spotify_pactl(False)

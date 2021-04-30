@@ -9,7 +9,7 @@ sudo chmod +x main.py
 echo -e "\n\033[1mCreating launcher...\033[0m"
 touch spotifytools.desktop
 truncate -s 0 spotifytools.desktop
-echo -e "[Desktop Entry]\nType=Application\nName=SpotifyTools\nIcon="$(pwd)"/assets/icons/spotifytools.svg\nCategories=Audio;Music;Player;AudioVideo;\nComment=Display song lyrics and mute Spotify advertisements\nExec="$(pwd)"/main.py" >> spotifytools.desktop
+echo -e "[Desktop Entry]\nType=Application\nName=SpotifyTools\nIcon=$(pwd)/assets/icons/spotifytools.svg\nCategories=Audio;Music;Player;AudioVideo;\nComment=Display song lyrics and mute Spotify advertisements\nExec=$(pwd)/main.py" >> spotifytools.desktop
 
 # Make the launcher executable
 sudo chmod +x spotifytools.desktop
