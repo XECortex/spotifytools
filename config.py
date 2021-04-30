@@ -3,7 +3,6 @@ import os
 import util
 import sys
 import argparse
-import watchdog
 
 from configupdater import ConfigUpdater
 from watchdog.events import RegexMatchingEventHandler

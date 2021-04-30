@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import gi
-import argparse
 import socket
 import util
 import sys

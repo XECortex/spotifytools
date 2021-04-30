@@ -18,8 +18,9 @@ def spotify_player(): return dbus.Interface(dbus.SessionBus().get_object('org.mp
 
 
 class Logger():
-	def hidebug(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BLACK}DEBUG{colors.RESET + colors.BLACK}: {msg}{colors.RESET}')
-	def hidebug (msg): pass
+    # def hidebug(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BLACK}DEBUG{colors.RESET + colors.BLACK}: {msg}{colors.RESET}')
+
+	def hidebug(msg): pass
 	def debug(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BRIGHT_BLACK}DEBUG{colors.RESET}: {msg}{colors.RESET}')
 	def info(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.BLUE}INFO{colors.RESET}: {msg}{colors.RESET}')
 	def warn(msg): print(f'{get_timestamp()}: {colors.BOLD + colors.YELLOW}WARN{colors.RESET}: {msg}{colors.RESET}')
@@ -66,7 +67,7 @@ def get_spotify_metadata():
 
 def get_playback_status():
 	try: return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'PlaybackStatus')
-	except: return 'Paused'
+	except Exception: return 'Paused'
 
 
 def google_lyrics(query):
