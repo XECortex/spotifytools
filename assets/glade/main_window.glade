@@ -19,7 +19,7 @@
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-bottom">6</property>
-            <property name="message-type">error</property>
+            <property name="message-type">warning</property>
             <property name="revealed">False</property>
             <child internal-child="action_area">
               <object class="GtkButtonBox">
@@ -132,10 +132,11 @@
                     </child>
                     <child>
                       <object class="GtkButton">
-                        <property name="label" translatable="yes">Launch Spotify now</property>
+                        <property name="label" translatable="yes">Launch Spotify</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
+                        <property name="tooltip-text" translatable="yes">Open the Spotify client</property>
                         <property name="halign">center</property>
                         <signal name="clicked" handler="launch_spotify" swapped="no"/>
                       </object>
@@ -162,13 +163,21 @@
                     <property name="margin-top">6</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkImage" id="cover">
+                      <object class="GtkEventBox">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
+                        <property name="tooltip-text" translatable="yes">Open original</property>
+                        <signal name="button-press-event" handler="open_cover" swapped="no"/>
+                        <child>
+                          <object class="GtkImage" id="cover">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
-                        <property name="fill">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -224,12 +233,12 @@ Album</property>
                             <property name="halign">start</property>
                             <property name="spacing">6</property>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="player_previous">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
                                 <property name="tooltip-text" translatable="yes">Previous</property>
-                                <signal name="clicked" handler="previous" swapped="no"/>
+                                <signal name="clicked" handler="player_previous" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
@@ -245,12 +254,12 @@ Album</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="player_play_pause">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
                                 <property name="tooltip-text" translatable="yes">Play / Pause</property>
-                                <signal name="clicked" handler="play_pause" swapped="no"/>
+                                <signal name="clicked" handler="player_play_pause" swapped="no"/>
                                 <child>
                                   <object class="GtkImage" id="play_pause_indicator">
                                     <property name="visible">True</property>
@@ -266,12 +275,12 @@ Album</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="player_next">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
-                                <property name="tooltip-text" translatable="yes">Skip</property>
-                                <signal name="clicked" handler="skip" swapped="no"/>
+                                <property name="tooltip-text" translatable="yes">Next</property>
+                                <signal name="clicked" handler="player_next" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
                                     <property name="visible">True</property>
@@ -298,18 +307,18 @@ Album</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkButton">
+                              <object class="GtkButton" id="copy_song_info">
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
-                                <property name="tooltip-text" translatable="yes">Copy song URL</property>
+                                <property name="tooltip-text" translatable="yes">Copy song info</property>
                                 <property name="always-show-image">True</property>
-                                <signal name="clicked" handler="copy_song_url" swapped="no"/>
+                                <signal name="clicked" handler="copy_song_info" swapped="no"/>
                                 <child>
-                                  <object class="GtkImage" id="url-copy">
+                                  <object class="GtkImage">
                                     <property name="visible">True</property>
                                     <property name="can-focus">False</property>
-                                    <property name="icon-name">url-copy</property>
+                                    <property name="icon-name">edit-copy</property>
                                   </object>
                                 </child>
                               </object>
@@ -377,7 +386,7 @@ Album</property>
                       <object class="GtkSearchEntry" id="lyric_search">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="tooltip-text" translatable="yes">Search for lyric texts by entering song name and artist</property>
+                        <property name="tooltip-text" translatable="yes">Search for lyrics by song name and artist</property>
                         <property name="primary-icon-name">edit-find-symbolic</property>
                         <property name="primary-icon-activatable">False</property>
                         <property name="primary-icon-sensitive">False</property>
@@ -397,7 +406,7 @@ Album</property>
                         <property name="sensitive">False</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
-                        <property name="tooltip-text" translatable="yes">Display lyrics from the currently on Spotify playing song</property>
+                        <property name="tooltip-text" translatable="yes">Display lyrics of the currently playing song</property>
                         <signal name="clicked" handler="spotify_lyrics" swapped="no"/>
                       </object>
                       <packing>
@@ -417,6 +426,7 @@ Album</property>
                   <object class="GtkSpinner" id="lyrics_loading">
                     <property name="can-focus">False</property>
                     <property name="no-show-all">True</property>
+                    <property name="tooltip-text" translatable="yes">Searching lyris...</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -587,6 +597,7 @@ Artist</property>
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
                         <property name="receives-default">True</property>
+                        <property name="tooltip-text" translatable="yes">Save disk space by deleting chached covers</property>
                         <property name="halign">end</property>
                         <signal name="clicked" handler="clear_cache" swapped="no"/>
                       </object>

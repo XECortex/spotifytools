@@ -3,8 +3,10 @@ import gi
 import threading
 import os
 import util
+import webbrowser
 import shutil
 import requests
+import tempfile
 
 gi.require_version('Gtk', '3.0')
 
@@ -20,6 +22,8 @@ class MainWindow():
 		self.config = config
 		self.app.window_open = True
 		self.cover_cache = os.path.join(os.getenv('XDG_CACHE_HOME', os.path.expanduser('~/.cache')), 'spotifytools')
+		self.tmp_cover_path = False
+		self.lyric_update_threads = 0
 
 		self._build_window()
 		self.switch_page(page)
@@ -55,10 +59,11 @@ class MainWindow():
 			'launch_spotify': lambda button: util.launch_spotify(),
 			'search_lyrics': lambda entry: threading.Thread(target=self._search_lyrics, args={ entry }).start(),
 			'spotify_lyrics': lambda button: threading.Thread(target=self._spotify_lyrics).start(),
-			'play_pause': lambda button: self._play_pause(button),
-			'skip': lambda button: util.spotify_player().Next(),
-			'previous': lambda button: util.spotify_player().Previous(),
-			'copy_song_url': lambda button: Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(self.metadata['url'], -1),
+			'open_cover': lambda event_box, event_button: webbrowser.open(self.metadata['cover'], 0, True),
+			'player_previous': lambda button: util.spotify_player().Previous(),
+			'player_play_pause': lambda button: self._play_pause(button),
+			'player_next': lambda button: util.spotify_player().Next(),
+			'copy_song_info': lambda button: Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(f'{self.metadata["title"]}\n{self.metadata["artist"][0]}\n{self.metadata["url"]}', -1),
 			'update_preferences_hide_window': lambda switch, state: self.config.update_option('config', 'hide-window', str(state).lower()),
 			'update_preferences_launch_spotify': lambda switch, state: self.config.update_option('config', 'launch-spotify', str(state).lower()),
 			'update_preferences_cache_covers': lambda switch, state: self.config.update_option('config', 'cache-covers', str(state).lower()),
@@ -71,10 +76,6 @@ class MainWindow():
 		self.builder.get_object('preferences_hide_window').set_active(self.config.values['hide_window'])
 		self.builder.get_object('preferences_launch_spotify').set_active(self.config.values['launch_spotify'])
 		self.builder.get_object('preferences_cache_covers').set_active(self.config.values['cache_covers'])
-
-		# Fallback icon for 'url-copy'
-		if not Gtk.IconTheme.get_default().has_icon('url-copy'):
-			self.builder.get_object('url-copy').set_from_icon_name('edit-copy', Gtk.IconSize.BUTTON)
 
 		self.builder.connect_signals(handlers)
 		self.builder.get_object('window').show_all()
@@ -114,6 +115,10 @@ class MainWindow():
 			if self.metadata['running']:
 				# Reveal the info bar if an ad is palying
 				GLib.idle_add(self.builder.get_object('ad_playing_info').set_revealed, self.metadata['is_ad'])
+				GLib.idle_add(self.builder.get_object('playing_info').set_sensitive, not self.metadata['is_ad'])
+				GLib.idle_add(self.builder.get_object('player_previous').set_sensitive, not self.metadata['is_ad'])
+				GLib.idle_add(self.builder.get_object('player_next').set_sensitive, not self.metadata['is_ad'])
+				GLib.idle_add(self.builder.get_object('copy_song_info').set_sensitive, not self.metadata['is_ad'])
 
 				# Update the song info
 				GLib.idle_add(self.builder.get_object('not_running').hide)
@@ -141,36 +146,40 @@ class MainWindow():
 
 
 	def _set_cover(self, url):
-		if url.startswith('https://'):
-			if self.config.values['cache_covers']:
-				if not os.path.isdir(self.cover_cache):
-					util.Logger.warn(f'Cache directory "{self.cover_cache}" does not exist, attempting to create')
-					os.makedirs(self.cover_cache)
+		delete_tmp_file = False
 
-				cover_path = os.path.join(self.cover_cache, f'{url[24:]}.png')
+		try:
+			if url.startswith('https://'):
+				if self.config.values['cache_covers']:
+					if not os.path.isdir(self.cover_cache):
+						util.Logger.warn(f'Cache directory "{self.cover_cache}" does not exist, attempting to create')
+						os.makedirs(self.cover_cache)
 
-				if not os.path.isfile(cover_path):
+					cover_path = os.path.join(self.cover_cache, f'{url[24:]}.png')
+
+					if not os.path.isfile(cover_path):
+						util.Logger.debug(f'Downloading cover from "{url}"')
+
+						response = requests.get(url)
+
+						with open(cover_path, 'wb') as f: f.write(response.content)
+
+						self._update_preferences_cache_size()
+					else: util.Logger.debug(f'Loading cached cover from "{cover_path}"')
+				else:
 					util.Logger.debug(f'Downloading cover from "{url}"')
 
+					delete_tmp_file = True
+					tmp_cover_fd, cover_path = tempfile.mkstemp()
 					response = requests.get(url)
 
-					with open(cover_path, 'wb') as f: f.write(response.content)
+					with os.fdopen(tmp_cover_fd, 'wb') as tmp: tmp.write(response.content)
+			else: cover_path = url
 
-					self._update_preferences_cache_size()
-				else: util.Logger.debug(f'Loading cached cover from "{cover_path}"')
-			else:
-				util.Logger.debug(f'Downloading cover from "{url}"')
+			GLib.idle_add(self.builder.get_object('cover').set_from_pixbuf, GdkPixbuf.Pixbuf.new_from_file(cover_path).scale_simple(128, 128, 1))
+		finally:
+			if delete_tmp_file and os.path.isfile(cover_path): os.unlink(cover_path)
 
-				cover_path = '/tmp/cover.png'
-				response = requests.get(url)
-
-				with open(cover_path, 'wb') as f: f.write(response.content)
-		else: cover_path = url
-
-		GLib.idle_add(self.builder.get_object('cover').set_from_pixbuf, GdkPixbuf.Pixbuf.new_from_file(cover_path).scale_simple(128, 128, 1))
-
-
-	lyric_update_threads = 0
 
 	def _update_lyrics(self, query=False):
 		self.lyric_update_threads += 1

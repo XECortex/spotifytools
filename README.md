@@ -1,4 +1,4 @@
-# SpotifyTools - <i>v1.8</i>
+# SpotifyTools - <i>v1.9</i>
 A GTK application written in Python that displays song lyrics and mutes Spotify advertisements
 
 ## Installation
