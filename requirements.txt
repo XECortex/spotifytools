@@ -1,6 +1,0 @@
-pygobject
-watchdog
-requests
-configupdater
-lxml
-beautifulsoup4

@@ -1,21 +1,28 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
-echo -e "\n\033[1mInstalling...\033[0m"
+if [ "$EUID" -ne 0 ]; then
+    echo "\033[1;91mPlease run as root\033[0m"
+    exit
+fi
 
-# Make main.py executable
-sudo chmod +x main.py
+echo "\033[1mInstalling dependencies...\033[0m"
+python3 -m pip install pygobject watchdog requests configupdater lxml beautifulsoup4
 
-# Create the desktop launcher
-echo -e "\n\033[1mCreating launcher...\033[0m"
-touch spotifytools.desktop
-truncate -s 0 spotifytools.desktop
-echo -e "[Desktop Entry]\nType=Application\nName=SpotifyTools\nIcon=$(pwd)/assets/icons/spotifytools.svg\nCategories=Audio;Music;Player;AudioVideo;\nComment=Display song lyrics and mute Spotify advertisements\nExec=$(pwd)/main.py" >> spotifytools.desktop
+echo "\033[1mSeting execute permissions...\033[0m"
+chmod +x spotifytools
+chmod +x spotifytools.desktop
+chmod +x src/main.py
+chmod +x uninstall.sh
 
-# Make the launcher executable
-sudo chmod +x spotifytools.desktop
+echo "\033[1mCopying files...\033[0m"
+if [ ! -d /opt/spotifytools/ ]; then
+    mkdir /opt/spotifytools/
+fi
 
-# Copy the launcher to the desktop and applications directory
-sudo cp spotifytools.desktop /usr/share/applications
-cp spotifytools.desktop ~/Desktop
+cp -a spotifytools /usr/bin/
+cp -a spotifytools.desktop /usr/share/applications/
+cp -a src/. /opt/spotifytools/
+cp -a version /opt/spotifytools/
+cp -a uninstall.sh /opt/spotifytools/
 
-echo -e "\033[1;32mDone!\033[0m\n\n\033[33mPlease make sure all Python dependencies are also installed.\033[0m"
+echo "\033[1mDone!\033[0m"
