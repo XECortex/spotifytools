@@ -7,7 +7,7 @@
     <a href="https://github.com/XECortex/spotifytools/stargazers"><img src="https://img.shields.io/github/stars/XECortex/spotifytools?style=social"></a>
 </p>
 
-> “A GTK application written in Python that displays song lyrics and mutes Spotify advertisements“
+“A GTK application written in Python that displays song lyrics and mutes Spotify advertisements“
 
 ## Installation
 The installation of this tool is pretty easy, just follow the steps below:
