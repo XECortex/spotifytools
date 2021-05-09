@@ -34,10 +34,8 @@ if __name__ == '__main__':
     util.Logger.info('Checking version')
     Notify.init('SpotifyTools')
 
-    version = '1.0'
-
     with open(f'{util.get_dirname(__file__)}/version', 'r') as version_file:
-        version = version_file.read() or '1.0'
+        version = version_file.read() or '0.0.0'
 
     up_version = requests.get('https://raw.githubusercontent.com/XECortex/spotifytools/main/version').text
 

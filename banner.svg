@@ -7,7 +7,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="64"
+   width="187.39101"
    height="64"
    version="1"
    id="svg20"
@@ -37,14 +37,14 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1174"
+     inkscape:window-height="1154"
      id="namedview22"
      showgrid="false"
      inkscape:zoom="5.0546875"
      inkscape:cx="91.018052"
      inkscape:cy="61.9153"
      inkscape:window-x="0"
-     inkscape:window-y="26"
+     inkscape:window-y="46"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg20"
      inkscape:document-rotation="0" />
@@ -97,5 +97,41 @@
        style="fill:#ffffff"
        d="m 38,19.367 v 9.632812 l -6,4 -6,-4 v -9.619141 c -4.864353,2.309266 -7.993068,7.20808 -8,12.619141 0,7.731985 6.268014,14 14,14 7.731986,0 14,-6.268015 14,-14 C 45.9973,26.58435 42.868564,21.67772 38,19.367 Z"
        id="path14-5" />
+  </g>
+  <g
+     id="g1558"
+     transform="matrix(0.50892641,0,0,0.50892641,2.201656,-0.07139799)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:41.7345px;line-height:1.125;font-family:Rubik;-inkscape-font-specification:'Rubik Medium';text-align:center;text-anchor:middle;opacity:0.2;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.04336"
+       x="242.15094"
+       y="60.895672"
+       id="text839-9"><tspan
+         sodipodi:role="line"
+         id="tspan837-1"
+         x="242.15094"
+         y="60.895672"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:63.0946px;font-family:Rubik;-inkscape-font-specification:'Rubik Medium';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:1.04336">Spotify</tspan><tspan
+         sodipodi:role="line"
+         x="242.15094"
+         y="113.68834"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Rubik;-inkscape-font-specification:'Rubik Medium';text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:1.04336"
+         id="tspan963">Tools</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:41.7345px;line-height:1.125;font-family:Rubik;-inkscape-font-specification:'Rubik Medium';text-align:center;text-anchor:middle;fill:#1ed760;fill-opacity:1;stroke:none;stroke-width:1.04336"
+       x="242.15094"
+       y="58.61982"
+       id="text839"><tspan
+         sodipodi:role="line"
+         id="tspan837"
+         x="242.15094"
+         y="58.61982"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:63.0946px;font-family:Rubik;-inkscape-font-specification:'Rubik Medium';text-align:center;text-anchor:middle;fill:#1ed760;fill-opacity:1;stroke-width:1.04336">Spotify</tspan><tspan
+         sodipodi:role="line"
+         x="242.15094"
+         y="111.41249"
+         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:Rubik;-inkscape-font-specification:'Rubik Medium';text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#1ed760;fill-opacity:1;stroke-width:1.04336"
+         id="tspan961">Tools</tspan></text>
   </g>
 </svg>
