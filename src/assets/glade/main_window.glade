@@ -7,7 +7,7 @@
     <property name="window-position">center</property>
     <property name="default-width">480</property>
     <property name="default-height">420</property>
-    <property name="icon">../icons/spotifytools.svg</property>
+    <property name="icon">../spotifytools.svg</property>
     <signal name="destroy" handler="destroy" swapped="no"/>
     <child>
       <object class="GtkBox">
