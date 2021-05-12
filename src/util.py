@@ -1,13 +1,16 @@
-import os
-import dbus
 import colors
+import socket
+import sys
+import os
+import psutil
+import dbus
 import urllib
 import requests
 import re
 
 from datetime import datetime
-from bs4 import BeautifulSoup
 from subprocess import check_output
+from bs4 import BeautifulSoup
 
 
 def get_timestamp():
@@ -35,30 +38,55 @@ class Logger():
         print(f'{get_timestamp()}: {colors.BOLD + colors.BRIGHT_RED}ERROR{colors.RESET}: {msg}{colors.RESET}')
 
 
+# Check if another instance is already running
+def get_lock():
+    get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+
+    try:
+        get_lock._lock_socket.bind('\0spotifytools')
+    except socket.error:
+        Logger.error('Another instance is already running')
+        sys.exit(1)
+
+
 def get_dirname(file_path):
     return os.path.dirname(os.path.realpath(file_path))
 
 
-def get_dir_size(path):
-    return sum(os.path.getsize(os.path.join(path, f)) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)))
+def process_running(name):
+    # Iterate over all running processes
+    for proc in psutil.process_iter():
+        try:
+            if name.lower() in proc.name().lower():
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
 
-
-def human_readable_size(size, decimal_places = 1):
-    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']:
-        if size < 1024.0 or unit == 'PiB':
-            break
-        size /= 1024.0
-    return f'{size:.{decimal_places}f} {unit}'
-
-
-def spotify_player():
-    return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
+    return False
 
 
 def launch_spotify():
     Logger.info('Launching Spotify')
     # Launch Spotify without any console logging and disown the process
-    os.system('spotify >/dev/null 2>&1 & disown')
+    os.system('spotify >/dev/null 2>&1 &')
+
+
+def spotify_pactl(mute):
+    # Mute all Spotify-players
+    # List sink-inputs
+    sink_list = check_output(['pactl', 'list', 'sink-inputs']).splitlines()
+    current_id = 0
+
+    # Iterate over the lines of the output
+    for line in sink_list:
+        line = str(line.decode())
+
+        # Mute Spotify
+        if line.startswith('Sink Input #'):
+            current_id = line[12:]
+        elif line.endswith('binary = "spotify"'):
+            Logger.hidebug(f'{"Muting" if mute else "Unmuting"} sink-input #{current_id}')
+            os.system(f'pactl set-sink-input-mute "{current_id}" {"1" if mute else "0"}')
 
 
 def get_spotify_metadata():
@@ -86,6 +114,10 @@ def get_spotify_metadata():
         return { 'running': False }
 
 
+def spotify_player():
+    return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.mpris.MediaPlayer2.Player')
+
+
 def get_playback_status():
     try:
         return dbus.Interface(dbus.SessionBus().get_object('org.mpris.MediaPlayer2.spotify', '/org/mpris/MediaPlayer2'), 'org.freedesktop.DBus.Properties').Get('org.mpris.MediaPlayer2.Player', 'PlaybackStatus')
@@ -93,22 +125,16 @@ def get_playback_status():
         return 'Paused'
 
 
-def spotify_pactl(mute):
-    # Mute all Spotify-players
-    # List sink-inputs
-    sink_list = check_output(['pactl', 'list', 'sink-inputs']).splitlines()
-    current_id = 0
+def human_readable_size(size, decimal_places = 1):
+    for unit in ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB']:
+        if size < 1024.0 or unit == 'PiB':
+            break
+        size /= 1024.0
+    return f'{size:.{decimal_places}f} {unit}'
 
-    # Iterate over the lines of the output
-    for line in sink_list:
-        line = str(line.decode())
 
-        # Mute Spotify
-        if line.startswith('Sink Input #'):
-            current_id = line[12:]
-        elif line.endswith('binary = "spotify"'):
-            Logger.hidebug(f'{"Muting" if mute else "Unmuting"} sink-input #{current_id}')
-            os.system(f'pactl set-sink-input-mute "{current_id}" {"1" if mute else "0"}')
+def get_dir_size(path):
+    return sum(os.path.getsize(os.path.join(path, f)) for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)))
 
 
 def google_lyrics(query):

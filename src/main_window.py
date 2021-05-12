@@ -1,7 +1,7 @@
 
 import gi
-import threading
 import os
+import threading
 import util
 import webbrowser
 import shutil
@@ -55,20 +55,30 @@ class MainWindow():
         # Build the window from the glade file
         self.builder = Gtk.Builder()
         handlers = {
+            # Window
             'destroy': lambda window: self._destroy(),
             'page_change': lambda stack, visible_child: self._page_change(stack, visible_child),
+
+            # Playing
             'launch_spotify': lambda button: util.launch_spotify(),
-            'search_lyrics': lambda entry: threading.Thread(target=self._search_lyrics, args={ entry }).start(),
-            'spotify_lyrics': lambda button: threading.Thread(target=self._spotify_lyrics).start(),
             'open_cover': lambda event_box, event_button: webbrowser.open(self.metadata['cover'], 0, True),
             'player_previous': lambda button: util.spotify_player().Previous(),
             'player_play_pause': lambda button: self._play_pause(button),
             'player_next': lambda button: util.spotify_player().Next(),
             'copy_song_info': lambda button: Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD).set_text(f'{self.metadata["title"]}\n{self.metadata["artist"][0]}\n{self.metadata["url"]}', -1),
+
+            # Lyrics
+            'search_lyrics': lambda entry: threading.Thread(target=self._search_lyrics, args={ entry }).start(),
+            'spotify_lyrics': lambda button: threading.Thread(target=self._spotify_lyrics).start(),
+
+            # Preferences
             'update_preferences_hide_window': lambda switch, state: self.config.update_option('config', 'hide-window', str(state).lower()),
             'update_preferences_launch_spotify': lambda switch, state: self.config.update_option('config', 'launch-spotify', str(state).lower()),
             'update_preferences_cache_covers': lambda switch, state: self.config.update_option('config', 'cache-covers', str(state).lower()),
-            'clear_cache': lambda button: self._clear_cache()
+            'clear_cache': lambda button: self._clear_cache(),
+            'update_preferences_tray_icon': lambda file_chooser: self.config.update_option('config', 'tray-icon', file_chooser.get_filename() or '/opt/spotifytools/assets/spotifytools.svg'),
+            'about': lambda button: self._show_about_dialog(),
+            'quit': lambda button: self.app.main_quit()
         }
 
         self.builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/main_window.glade')
@@ -150,6 +160,71 @@ class MainWindow():
                 GLib.idle_add(self.builder.get_object('spotify_lyrics_button').set_sensitive, False)
 
 
+    def _destroy(self):
+        util.Logger.debug('Stopping window thread')
+
+        self.window_main_thread.running = False
+
+        self.window_main_thread.join()
+
+        self.app.window_open = False
+        del self.app.main_window
+
+
+    def _page_change(self, stack, visible_child):
+        pass
+
+
+    def _play_pause(self, button):
+        if util.get_playback_status() == 'Paused':
+            util.spotify_player().Play()
+        else:
+            util.spotify_player().Pause()
+
+        self._update_play_pause_indicator()
+
+
+    def _search_lyrics(self, entry):
+        self.lyrics_searched = True
+
+        self._update_lyrics(entry.get_text())
+        GLib.idle_add(entry.set_text, '')
+
+
+    def _spotify_lyrics(self):
+        self.lyrics_searched = False
+
+        self._update_lyrics()
+
+
+    def _clear_cache(self):
+        util.Logger.info('Clearing cache directory')
+        shutil.rmtree(self.cover_cache, ignore_errors=True)
+        self._update_preferences_cache_size()
+
+
+    def _show_about_dialog(self):
+        # Same as building the main window
+        util.Logger.debug('Showing about dialog')
+
+        builder = Gtk.Builder()
+        
+        builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/about_dialog.glade')
+        
+        about_dialog = builder.get_object('about_dialog')
+
+        about_dialog.run()
+        about_dialog.destroy()
+
+
+    def _update_preferences_cache_size(self):
+        GLib.idle_add(self.builder.get_object('preferences_cache_size').set_text, util.human_readable_size(util.get_dir_size(self.cover_cache)) if os.path.exists(self.cover_cache) else '0.0 B')
+
+
+    def _update_play_pause_indicator(self):
+        GLib.idle_add(self.builder.get_object('play_pause_indicator').set_from_icon_name, f'media-playback-{"start" if util.get_playback_status() == "Paused" else "pause"}', Gtk.IconSize.BUTTON)
+
+
     def _set_cover(self, url):
         delete_tmp_file = False
 
@@ -228,54 +303,3 @@ class MainWindow():
 
             GLib.idle_add(self.builder.get_object('lyric_view').show)
             GLib.idle_add(textbuffer.set_text, text)
-
-
-    def _destroy(self):
-        util.Logger.debug('Stopping window thread')
-
-        self.window_main_thread.running = False
-
-        self.window_main_thread.join()
-
-        self.app.window_open = False
-        del self.app.main_window
-
-
-    def _search_lyrics(self, entry):
-        self.lyrics_searched = True
-
-        self._update_lyrics(entry.get_text())
-        GLib.idle_add(entry.set_text, '')
-
-
-    def _spotify_lyrics(self):
-        self.lyrics_searched = False
-
-        self._update_lyrics()
-
-
-    def _play_pause(self, button):
-        if util.get_playback_status() == 'Paused':
-            util.spotify_player().Play()
-        else:
-            util.spotify_player().Pause()
-
-        self._update_play_pause_indicator()
-
-
-    def _clear_cache(self):
-        util.Logger.info('Clearing cache directory')
-        shutil.rmtree(self.cover_cache, ignore_errors=True)
-        self._update_preferences_cache_size()
-
-
-    def _update_play_pause_indicator(self):
-        GLib.idle_add(self.builder.get_object('play_pause_indicator').set_from_icon_name, f'media-playback-{"start" if util.get_playback_status() == "Paused" else "pause"}', Gtk.IconSize.BUTTON)
-
-
-    def _update_preferences_cache_size(self):
-        GLib.idle_add(self.builder.get_object('preferences_cache_size').set_text, util.human_readable_size(util.get_dir_size(self.cover_cache)) if os.path.exists(self.cover_cache) else '0.0 B')
-
-
-    def _page_change(self, stack, visible_child):
-        pass

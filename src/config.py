@@ -4,7 +4,7 @@ import util
 import sys
 import argparse
 
-from configupdater import ConfigUpdater
+from configupdater import ConfigUpdater, Option
 from watchdog.events import RegexMatchingEventHandler
 from watchdog.observers import Observer
 from shutil import copy
@@ -92,9 +92,10 @@ class Config():
         try:
             self.config.read(self.config_path)
 
-            self.values['hide_window'] = self._overwrite(self._str_to_bool(self.config.get('config', 'hide-window', 'False').value), self.args.hide_window, self.args.show_window)
-            self.values['launch_spotify'] = self._overwrite(self._str_to_bool(self.config.get('config', 'launch-spotify', 'True').value), self.args.launch_spotify, self.args.dont_launch_spotify)
-            self.values['cache_covers'] = self._str_to_bool(self.config.get('config', 'cache-covers', 'True').value)
+            self.values['hide_window'] = self._overwrite(self._str_to_bool(self.config.get('config', 'hide-window', Option('hide-window', 'false', 'config')).value), self.args.hide_window, self.args.show_window)
+            self.values['launch_spotify'] = self._overwrite(self._str_to_bool(self.config.get('config', 'launch-spotify', Option('launch-spotify', 'true', 'config')).value), self.args.launch_spotify, self.args.dont_launch_spotify)
+            self.values['cache_covers'] = self._str_to_bool(self.config.get('config', 'cache-covers', Option('cache-covers', 'true', 'config')).value)
+            self.values['tray_icon'] = self.config.get('config', 'tray-icon', Option('tray-icon', '/opt/spotifytools/assets/spotifytools.svg', 'config')).value
         except Exception as e:
             if rec:
                 util.Logger.error('Could not create config file')

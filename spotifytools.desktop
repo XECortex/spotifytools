@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=SpotifyTools
-Icon=/opt/spotifytools/assets/spotifytools.svg
+Icon=spotifytools
 Categories=Audio;Music;Player;AudioVideo;
 Comment=Display song lyrics and mute Spotify advertisements
 Exec=spotifytools

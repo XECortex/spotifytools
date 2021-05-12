@@ -8,15 +8,12 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import AppIndicator3, Gtk
 
 
-APPINDICATOR_ID = 'spotifytools-tray'
-
-
 class TrayIcon():
     def __init__(self, app):
         self.app = app
 
         # Create the system tray icon
-        self.indicator = AppIndicator3.Indicator.new(APPINDICATOR_ID, 'audio-card', AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
+        self.indicator = AppIndicator3.Indicator.new('spotifytools-tray', self.app.config.values['tray_icon'], AppIndicator3.IndicatorCategory.SYSTEM_SERVICES)
 
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.indicator.set_menu(self._build_tray_menu())

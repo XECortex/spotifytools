@@ -1,10 +1,9 @@
 #!/usr/bin/python3
 
 import gi
-import socket
 import util
-import sys
 import requests
+import sys
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
@@ -14,18 +13,7 @@ from config import Config
 from app import App
 
 if __name__ == '__main__':
-    # Check if another instance is already running
-    def get_lock():
-        get_lock._lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-
-        try:
-            get_lock._lock_socket.bind('\0spotifytools')
-        except socket.error:
-            util.Logger.error('Another instance is already running')
-            sys.exit(1)
-
-
-    get_lock()
+    util.get_lock()
 
     # Load the configuration
     config = Config()
@@ -46,7 +34,7 @@ if __name__ == '__main__':
 
     # Run the App
     try:
-        if config.values['launch_spotify']:
+        if config.values['launch_spotify'] and not util.process_running('spotify'):
             util.launch_spotify()
 
         app = App(config)

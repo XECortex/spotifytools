@@ -2,6 +2,21 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkImage" id="application-exit">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">application-exit</property>
+  </object>
+  <object class="GtkImage" id="dialog-information">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">dialog-information</property>
+  </object>
+  <object class="GtkImage" id="edit-delete">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">edit-delete</property>
+  </object>
   <object class="GtkWindow" id="window">
     <property name="can-focus">False</property>
     <property name="window-position">center</property>
@@ -506,11 +521,11 @@ Artist</property>
               </packing>
             </child>
             <child>
-              <!-- n-columns=2 n-rows=4 -->
+              <!-- n-columns=2 n-rows=6 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="valign">start</property>
+                <property name="row-spacing">3</property>
                 <property name="column-homogeneous">True</property>
                 <child>
                   <object class="GtkLabel">
@@ -599,6 +614,7 @@ Artist</property>
                         <property name="receives-default">True</property>
                         <property name="tooltip-text" translatable="yes">Save disk space by deleting chached covers</property>
                         <property name="halign">end</property>
+                        <property name="image">edit-delete</property>
                         <signal name="clicked" handler="clear_cache" swapped="no"/>
                       </object>
                       <packing>
@@ -625,6 +641,80 @@ Artist</property>
                   <packing>
                     <property name="left-attach">0</property>
                     <property name="top-attach">3</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Tray icon (restart required)</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFileChooserButton" id="preferences_tray_icon">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="create-folders">False</property>
+                    <property name="title" translatable="yes"/>
+                    <signal name="file-set" handler="update_preferences_tray_icon" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">end</property>
+                    <property name="vexpand">True</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">About</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="image">dialog-information</property>
+                        <signal name="clicked" handler="about" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Quit</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="halign">end</property>
+                        <property name="valign">end</property>
+                        <property name="vexpand">True</property>
+                        <property name="image">application-exit</property>
+                        <signal name="clicked" handler="quit" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">5</property>
                     <property name="width">2</property>
                   </packing>
                 </child>
