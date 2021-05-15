@@ -521,155 +521,12 @@ Artist</property>
               </packing>
             </child>
             <child>
-              <!-- n-columns=2 n-rows=6 -->
+              <!-- n-columns=2 n-rows=7 -->
               <object class="GtkGrid">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="row-spacing">3</property>
                 <property name="column-homogeneous">True</property>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">Hide main window on startup</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSwitch" id="preferences_hide_window">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="halign">end</property>
-                    <signal name="state-set" handler="update_preferences_hide_window" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">Automatically launch Spotify</property>
-                    <property name="use-markup">True</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSwitch" id="preferences_launch_spotify">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="halign">end</property>
-                    <signal name="state-set" handler="update_preferences_launch_spotify" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">Enable album cover art caching</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSwitch" id="preferences_cache_covers">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="halign">end</property>
-                    <signal name="state-set" handler="update_preferences_cache_covers" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkButton">
-                        <property name="label" translatable="yes">Clear cache</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">True</property>
-                        <property name="receives-default">True</property>
-                        <property name="tooltip-text" translatable="yes">Save disk space by deleting chached covers</property>
-                        <property name="halign">end</property>
-                        <property name="image">edit-delete</property>
-                        <signal name="clicked" handler="clear_cache" swapped="no"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="preferences_cache_size">
-                        <property name="visible">True</property>
-                        <property name="sensitive">False</property>
-                        <property name="can-focus">False</property>
-                        <property name="halign">end</property>
-                        <property name="label" translatable="yes">0.0B</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">3</property>
-                    <property name="width">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">start</property>
-                    <property name="label" translatable="yes">Tray icon (restart required)</property>
-                  </object>
-                  <packing>
-                    <property name="left-attach">0</property>
-                    <property name="top-attach">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkFileChooserButton" id="preferences_tray_icon">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="create-folders">False</property>
-                    <property name="title" translatable="yes"/>
-                    <signal name="file-set" handler="update_preferences_tray_icon" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left-attach">1</property>
-                    <property name="top-attach">4</property>
-                  </packing>
-                </child>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
@@ -714,7 +571,219 @@ Artist</property>
                   </object>
                   <packing>
                     <property name="left-attach">0</property>
+                    <property name="top-attach">6</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFileChooserButton" id="preferences_tray_icon">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Path to image or icon name</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="create-folders">False</property>
+                    <property name="title" translatable="yes"/>
+                    <signal name="file-set" handler="update_preferences_tray_icon" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
                     <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Path to image or icon name</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Tray icon</property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">5</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label" translatable="yes">Clear cache</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <property name="tooltip-text" translatable="yes">Save disk space by deleting chached covers</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <property name="image">edit-delete</property>
+                        <signal name="clicked" handler="clear_cache" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="preferences_cache_size">
+                        <property name="visible">True</property>
+                        <property name="sensitive">False</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">end</property>
+                        <property name="valign">center</property>
+                        <property name="label" translatable="yes">0.0B</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">4</property>
+                    <property name="width">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="tooltip-text" translatable="yes">Uses some disk space, but reduces internet usage</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Cache album cover art</property>
+                    <property name="wrap">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="preferences_cache_covers">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="tooltip-text" translatable="yes">Uses some disk space, but reduces internet usage</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="update_preferences_cache_covers" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Launch Spotify at startup</property>
+                    <property name="use-markup">True</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="preferences_launch_spotify">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="update_preferences_launch_spotify" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="preferences_hide_window">
+                    <property name="visible">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="update_preferences_hide_window" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left-attach">1</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="label" translatable="yes">Don't show the main window at startup</property>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="update_info">
+                    <property name="can-focus">False</property>
+                    <property name="no-show-all">True</property>
+                    <property name="margin-bottom">3</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;A new version of SpotifyTools is available!&lt;/b&gt;&lt;/big&gt;
+Copy following command into in your terminal to download &amp;amp; install the update:</property>
+                        <property name="use-markup">True</property>
+                        <property name="wrap">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="label" translatable="yes">&lt;tt&gt;sudo spotifytools update&lt;/tt&gt;</property>
+                        <property name="use-markup">True</property>
+                        <property name="justify">center</property>
+                        <property name="selectable">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSeparator">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="margin-top">6</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="left-attach">0</property>
+                    <property name="top-attach">0</property>
                     <property name="width">2</property>
                   </packing>
                 </child>

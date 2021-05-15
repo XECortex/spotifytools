@@ -2,10 +2,14 @@
 import gi
 import threading
 import util
+import sys
 import time
+import requests
+import os
 
 gi.require_version('Gtk', '3.0')
 
+from config import Config
 from gi.repository import Gtk
 from queue import Queue
 from tray_icon import TrayIcon
@@ -13,8 +17,23 @@ from main_window import MainWindow
 
 
 class App():
-    def __init__(self, config):
-        self.config = config
+    def __init__(self):
+        # Version check
+        util.get_lock()
+        util.Logger.info('Checking version')
+
+        with open(f'{util.get_dirname(__file__)}/version', 'r') as version_file:
+            version = version_file.read() or '0.0.0'
+            up_version = requests.get('https://raw.githubusercontent.com/XECortex/spotifytools/main/version').text
+
+            if version != up_version:
+                util.Logger.warn(f'Not up to date, current version: {version}, up version: {up_version}')
+
+                self.update_available = True
+            else:
+                self.update_available = False
+
+        self.config = Config()
         self.window_open = False
         self.request_update = False
         self.queue = Queue()
@@ -27,6 +46,12 @@ class App():
 
         self.main_thread.start()
 
+        if self.config.values['launch_spotify'] and not util.process_running('spotify'):
+            util.launch_spotify()
+
+        if not self.config.values['hide_window']:
+            self.open_main_window('playing')
+
 
     def main_quit(self):
         # Stop the main thread, unmute Spotify and quit
@@ -38,6 +63,7 @@ class App():
 
         self.main_thread.join()
         util.spotify_pactl(False)
+        sys.exit()
 
 
     def open_main_window(self, page):

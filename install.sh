@@ -48,6 +48,6 @@ fi
 cp -a src/assets/spotifytools.svg /usr/share/icons/hicolor/scalable/apps/
 
 echo -e "\033[1mUpdating icon cache...\033[0m"
-update-icon-caches /usr/share/icons/hicolor/
+gtk-update-icon-cache
 
 echo -e "\033[32;1mDone!\033[0m"

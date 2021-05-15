@@ -24,7 +24,6 @@ class ConfigUpdateEventHandler(RegexMatchingEventHandler):
         self.config.load()
 
 
-
 class Config():
     def __init__(self):
         self.values = {}

@@ -84,6 +84,9 @@ class MainWindow():
         self.builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/main_window.glade')
         self.builder.get_object('icon').set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(f'{util.get_dirname(__file__)}/assets/spotifytools.svg').scale_simple(22, 22, 1))
 
+        self.builder.get_object('content').child_set_property(self.builder.get_object('content').get_child_by_name('preferences'), 'needs_attention', True)
+        self.builder.get_object('update_info').show()
+
         self.builder.get_object('preferences_hide_window').set_active(self.config.values['hide_window'])
         self.builder.get_object('preferences_launch_spotify').set_active(self.config.values['launch_spotify'])
         self.builder.get_object('preferences_cache_covers').set_active(self.config.values['cache_covers'])
@@ -208,9 +211,9 @@ class MainWindow():
         util.Logger.debug('Showing about dialog')
 
         builder = Gtk.Builder()
-        
+
         builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/about_dialog.glade')
-        
+
         about_dialog = builder.get_object('about_dialog')
 
         about_dialog.run()
