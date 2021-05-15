@@ -7,6 +7,8 @@ if [ "$1" -eq "update" ]; then
         exit
     fi
 
+    killall spotifytools
+
     echo -e "\033[1mCloning repository...\033[0m"
     cd /tmp/
     git clone https://github.com/XECortex/spotifytools.git
