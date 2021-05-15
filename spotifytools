@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$1" -eq "update" ]; then
+if [ "$1" == "update" ]; then
     # Check if the script is run as root
     if [ "$EUID" -ne 0 ]; then
         echo -e "\033[1;91mERROR\033[0m: Please run as root"
