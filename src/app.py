@@ -7,10 +7,11 @@ import time
 import requests
 import os
 
+gi.require_version('Notify', '0.7')
 gi.require_version('Gtk', '3.0')
 
 from config import Config
-from gi.repository import Gtk
+from gi.repository import Notify, Gtk
 from queue import Queue
 from tray_icon import TrayIcon
 from main_window import MainWindow
@@ -21,6 +22,9 @@ class App():
         # Version check
         util.get_lock()
         util.Logger.info('Checking version')
+
+        Notify.init('SpotifyTools')
+        Notify.Notification.new('A new version of SpotifyTools is available!', 'Run “<tt>sudo spotifytools update</tt>“ to download &amp; install the update', 'system-software-update').show()
 
         with open(f'{util.get_dirname(__file__)}/version', 'r') as version_file:
             version = version_file.read() or '0.0.0'

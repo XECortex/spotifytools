@@ -82,7 +82,6 @@ class MainWindow():
         }
 
         self.builder.add_from_file(f'{util.get_dirname(__file__)}/assets/glade/main_window.glade')
-        self.builder.get_object('icon').set_from_pixbuf(GdkPixbuf.Pixbuf.new_from_file(f'{util.get_dirname(__file__)}/assets/spotifytools.svg').scale_simple(22, 22, 1))
 
         if self.app.update_available:
             self.builder.get_object('update_info').show()

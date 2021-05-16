@@ -810,11 +810,9 @@ Copy following command into in your terminal to download &amp;amp; install the u
         <property name="title" translatable="yes">SpotifyTools</property>
         <property name="subtitle" translatable="yes">Lyric Finder &amp; AdMuter</property>
         <property name="show-close-button">True</property>
+        <property name="decoration-layout">icon,menu:minimize,maximize,close</property>
         <child>
-          <object class="GtkImage" id="icon">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-          </object>
+          <placeholder/>
         </child>
       </object>
     </child>
