@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ "$1" = "update" ]; then
     # Check if the script is run as root
