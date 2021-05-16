@@ -7,23 +7,10 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 echo -e "\033[1mChecking dependencies...\033[0m"
-if [ ! command -v python3 &> /dev/null ]; then
-    echo -e "\033[1;91mERROR\033[0m: Python 3 is not installed on your system (install package python3)"
-    exit
-fi
-
-if [ ! command -v pip3 &> /dev/null ]; then
-    echo -e "\033[1;91mERROR\033[0m: pip (package installer for Python) is not installed on your system (install package python3-pip)"
-    exit
-fi
-
-if [ ! command -v spotify &> /dev/null ]; then
-    echo -e "\033[1;33mWARN\033[0m: Spotify is not installed on your system. This tool is pretty useless without it, isn't it?"
-fi
-
-if [ ! command -v pactl &> /dev/null ]; then
-    echo -e "\033[1;33mWARN\033[0m: pactl (PulseAudio control) was not found, some features might not work"
-fi
+command -v python3 > /dev/null || { echo -e "\033[1;91mERROR\033[0m: Python 3 is not installed on your system (install package python3)"; exit 1; }
+command -v pip3 > /dev/null || { echo -e "\033[1;91mERROR\033[0m: pip3 (package installer for Python) is not installed on your system (install package python3-pip)"; exit 1; }
+command -v spotify > /dev/null || echo -e "\033[1;33mWARN\033[0m: Spotify is not installed on your system. This tool is pretty useless without it, isn't it?"
+command -v pactl > /dev/null || echo -e "\033[1;33mWARN\033[0m: pactl (PulseAudio control) was not found, some features might not work"
 
 echo -e "\033[1mInstalling python packages...\033[0m"
 pip3 install pygobject psutil watchdog requests configupdater lxml beautifulsoup4
