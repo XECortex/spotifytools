@@ -1,7 +1,7 @@
 <h1 align="center"><img src="banner.svg" width="75%"></h1>
 <p align="center">
     <img src="https://img.shields.io/badge/-Python%203-grey?logo=python">
-    <img src="https://img.shields.io/badge/Version-1.10.4-brightgreen">
+    <img src="https://img.shields.io/badge/Version-1.10.5-brightgreen">
     <a href="https://github.com/XECortex/spotifytools/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licence-MIT-green"></a>
     <img src="https://img.shields.io/github/repo-size/XECortex/spotifytools?label=Repo%20size">
     <a href="https://github.com/XECortex/spotifytools/stargazers"><img src="https://img.shields.io/github/stars/XECortex/spotifytools?style=social"></a>
