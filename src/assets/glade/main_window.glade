@@ -759,7 +759,7 @@ Copy following command into in your terminal to download &amp;amp; install the u
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="halign">center</property>
-                            <property name="pixbuf">../../../../../Desktop/spicetify.png</property>
+                            <property name="pixbuf">../spicetify.png</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
