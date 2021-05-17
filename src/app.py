@@ -23,15 +23,15 @@ class App():
         util.get_lock()
         util.Logger.info('Checking version')
 
-        Notify.init('SpotifyTools')
-        Notify.Notification.new('A new version of SpotifyTools is available!', 'Run “<tt>sudo spotifytools update</tt>“ to download &amp; install the update', 'system-software-update').show()
-
         with open(f'{util.get_dirname(__file__)}/version', 'r') as version_file:
             version = version_file.read() or '0.0.0'
             up_version = requests.get('https://raw.githubusercontent.com/XECortex/spotifytools/main/version').text
 
             if version != up_version:
                 util.Logger.warn(f'Not up to date, current version: {version}, up version: {up_version}')
+
+                Notify.init('SpotifyTools')
+                Notify.Notification.new('A new version of SpotifyTools is available!', 'Run “<tt>sudo spotifytools update</tt>“ to download &amp; install the update', 'system-software-update').show()
 
                 self.update_available = True
             else:
