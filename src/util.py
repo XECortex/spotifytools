@@ -21,18 +21,14 @@ class Logger():
     def hidebug(msg):
         pass # print(f'{get_timestamp()}: {colors.BOLD + colors.BLACK}DEBUG{colors.RESET + colors.BLACK}: {msg}{colors.RESET}')
 
-
     def debug(msg):
         print(f'{get_timestamp()}: {colors.BOLD + colors.BRIGHT_BLACK}DEBUG{colors.RESET}: {msg}{colors.RESET}')
-
 
     def info(msg):
         print(f'{get_timestamp()}: {colors.BOLD + colors.BLUE}INFO{colors.RESET}: {msg}{colors.RESET}')
 
-
     def warn(msg):
         print(f'{get_timestamp()}: {colors.BOLD + colors.YELLOW}WARN{colors.RESET}: {msg}{colors.RESET}')
-
 
     def error(msg):
         print(f'{get_timestamp()}: {colors.BOLD + colors.BRIGHT_RED}ERROR{colors.RESET}: {msg}{colors.RESET}')

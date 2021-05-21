@@ -34,7 +34,6 @@ class MainWindow():
         self.app.request_update = True
         self.window_main_thread.start()
 
-
     def switch_page(self, page):
         self.builder.get_object('window').present()
 
@@ -47,7 +46,6 @@ class MainWindow():
         # Focus the lyric search box
         if page == 'lyrics':
             self.builder.get_object('lyric_search').grab_focus()
-
 
     def _build_window(self):
         util.Logger.debug('Building main window')
@@ -94,7 +92,6 @@ class MainWindow():
         self.builder.connect_signals(handlers)
         self.builder.get_object('window').show_all()
 
-
     def _window_main(self):
         # Run while the window is opened
         util.Logger.debug('Started window thread')
@@ -111,6 +108,8 @@ class MainWindow():
                 GLib.idle_add(self.builder.get_object('preferences_cache_covers').set_active, self.config.values['cache_covers'])
 
                 self._update_preferences_cache_size()
+
+                self.app.tray_icon.update_icon()
 
 
             playback_status = util.get_playback_status()
@@ -138,7 +137,11 @@ class MainWindow():
                 # Update the song info
                 GLib.idle_add(self.builder.get_object('not_running').hide)
                 GLib.idle_add(self.builder.get_object('playing').show)
-                GLib.idle_add(self.builder.get_object('playing_info').set_markup, f'<big>{GLib.markup_escape_text(self.metadata["title"])}</big>\n<small>by</small> {GLib.markup_escape_text(", ".join(self.metadata["artist"]))}\n<small>on</small> {GLib.markup_escape_text(self.metadata["album"])}')
+
+                playing = f'<big>{GLib.markup_escape_text(self.metadata["title"])}</big>\n<small>by</small> {GLib.markup_escape_text(", ".join(self.metadata["artist"]))}\n<small>on</small> {GLib.markup_escape_text(self.metadata["album"])}'
+
+                GLib.idle_add(self.builder.get_object('playing_info').set_markup, playing)
+                GLib.idle_add(self.builder.get_object('playing_info').set_tooltip_markup, playing)
 
                 track_length = str(timedelta(seconds=floor(self.metadata['length'] / 1e+6)))
 
@@ -154,14 +157,11 @@ class MainWindow():
                     threading.Thread(target=self._update_lyrics).start()
                 else:
                     GLib.idle_add(self.builder.get_object('spotify_lyrics_button').set_sensitive, True)
-
-                self._update_play_pause_indicator()
             else:
                 GLib.idle_add(self.builder.get_object('ad_playing_info').set_revealed, False)
                 GLib.idle_add(self.builder.get_object('playing').hide)
                 GLib.idle_add(self.builder.get_object('not_running').show)
                 GLib.idle_add(self.builder.get_object('spotify_lyrics_button').set_sensitive, False)
-
 
     def _destroy(self):
         util.Logger.debug('Stopping window thread')
@@ -173,10 +173,8 @@ class MainWindow():
         self.app.window_open = False
         del self.app.main_window
 
-
     def _page_change(self, stack, visible_child):
         pass
-
 
     def _play_pause(self, button):
         if util.get_playback_status() == 'Paused':
@@ -186,25 +184,21 @@ class MainWindow():
 
         self._update_play_pause_indicator()
 
-
     def _search_lyrics(self, entry):
         self.lyrics_searched = True
 
         self._update_lyrics(entry.get_text())
         GLib.idle_add(entry.set_text, '')
 
-
     def _spotify_lyrics(self):
         self.lyrics_searched = False
 
         self._update_lyrics()
 
-
     def _clear_cache(self):
         util.Logger.info('Clearing cache directory')
         shutil.rmtree(self.cover_cache, ignore_errors=True)
         self._update_preferences_cache_size()
-
 
     def _show_about_dialog(self):
         # Same as building the main window
@@ -219,16 +213,23 @@ class MainWindow():
         about_dialog.run()
         about_dialog.destroy()
 
-
     def _update_preferences_cache_size(self):
         GLib.idle_add(self.builder.get_object('preferences_cache_size').set_text, util.human_readable_size(util.get_dir_size(self.cover_cache)) if os.path.exists(self.cover_cache) else '0.0 B')
-
 
     def _update_play_pause_indicator(self):
         GLib.idle_add(self.builder.get_object('play_pause_indicator').set_from_icon_name, f'media-playback-{"start" if util.get_playback_status() == "Paused" else "pause"}', Gtk.IconSize.BUTTON)
 
-
     def _set_cover(self, url):
+        def no_connection_error_dialog():
+            dialog = Gtk.MessageDialog(flags=0, message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CANCEL, text="Please check your internet connection")
+
+            dialog.format_secondary_text("Error while downloading cover image")
+            dialog.run()
+            dialog.destroy()
+
+            self.app.main_quit()
+
+
         delete_tmp_file = False
 
         try:
@@ -243,7 +244,10 @@ class MainWindow():
                     if not os.path.isfile(cover_path):
                         util.Logger.debug(f'Downloading cover from "{url}"')
 
-                        response = requests.get(url)
+                        try:
+                            response = requests.get(url)
+                        except Exception:
+                            no_connection_error_dialog()
 
                         with open(cover_path, 'wb') as f: f.write(response.content)
 
@@ -255,7 +259,11 @@ class MainWindow():
 
                     delete_tmp_file = True
                     tmp_cover_fd, cover_path = tempfile.mkstemp()
-                    response = requests.get(url)
+
+                    try:
+                        response = requests.get(url)
+                    except Exception:
+                        no_connection_error_dialog()
 
                     with os.fdopen(tmp_cover_fd, 'wb') as tmp: tmp.write(response.content)
             else:
@@ -264,7 +272,6 @@ class MainWindow():
             GLib.idle_add(self.builder.get_object('cover').set_from_pixbuf, GdkPixbuf.Pixbuf.new_from_file(cover_path).scale_simple(128, 128, 1))
         finally:
             if delete_tmp_file and os.path.isfile(cover_path): os.unlink(cover_path)
-
 
     def _update_lyrics(self, query=False):
         self.lyric_update_threads += 1

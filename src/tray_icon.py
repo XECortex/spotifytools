@@ -18,6 +18,8 @@ class TrayIcon():
         self.indicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)
         self.indicator.set_menu(self._build_tray_menu())
 
+    def update_icon(self):
+        self.indicator.set_icon(self.app.config.values['tray_icon'])
 
     def _build_tray_menu(self):
         # Build the system tray menu from the glade file

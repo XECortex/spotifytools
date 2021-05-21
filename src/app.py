@@ -25,7 +25,17 @@ class App():
 
         with open(f'{util.get_dirname(__file__)}/version', 'r') as version_file:
             version = version_file.read() or '0.0.0'
-            up_version = requests.get('https://raw.githubusercontent.com/XECortex/spotifytools/main/version').text
+
+            try:
+                up_version = requests.get('https://raw.githubusercontent.com/XECortex/spotifytools/main/version').text
+            except Exception:
+                dialog = Gtk.MessageDialog(flags=0, message_type=Gtk.MessageType.ERROR, buttons=Gtk.ButtonsType.CANCEL, text="Please check your internet connection")
+
+                dialog.format_secondary_text("Error while retrieving version file from GitHub.")
+                dialog.run()
+                dialog.destroy()
+
+                self.main_quit(pre=True)
 
             if version != up_version:
                 util.Logger.warn(f'Not up to date, current version: {version}, up version: {up_version}')
@@ -56,19 +66,20 @@ class App():
         if not self.config.values['hide_window']:
             self.open_main_window('playing')
 
-
-    def main_quit(self):
+    def main_quit(self, pre=False):
         # Stop the main thread, unmute Spotify and quit
         util.Logger.info('Stopping main thread')
-        Gtk.main_quit()
-        self.config.stop_file_watcher()
 
-        self.main_thread.running = False
+        if not pre:
+            self.config.stop_file_watcher()
+            Gtk.main_quit()
 
-        self.main_thread.join()
+            self.main_thread.running = False
+
+            self.main_thread.join()
+
         util.spotify_pactl(False)
         sys.exit()
-
 
     def open_main_window(self, page):
         util.Logger.info(f'Opening main window on stack page "{page}"')
@@ -78,7 +89,6 @@ class App():
             self.main_window = MainWindow(self, page, self.config)
         else:
             self.main_window.switch_page(page)
-
 
     def _main(self):
         util.Logger.info('Started main thread')

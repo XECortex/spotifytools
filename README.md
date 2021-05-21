@@ -1,13 +1,15 @@
 <h1 align="center"><img src="banner.svg" width="75%"></h1>
 <p align="center">
     <img src="https://img.shields.io/badge/-Python%203-grey?logo=python">
-    <img src="https://img.shields.io/badge/Version-1.10.5-brightgreen">
+    <img src="https://img.shields.io/badge/Version-1.10.6-brightgreen">
     <a href="https://github.com/XECortex/spotifytools/blob/main/LICENSE"><img src="https://img.shields.io/badge/Licence-MIT-green"></a>
     <img src="https://img.shields.io/github/repo-size/XECortex/spotifytools?label=Repo%20size">
     <a href="https://github.com/XECortex/spotifytools/stargazers"><img src="https://img.shields.io/github/stars/XECortex/spotifytools?style=social"></a>
 </p>
 
 “A GTK application written in Python that displays song lyrics and mutes Spotify advertisements“
+
+Note that this app is not compatible with the Spotify web player.
 
 ## Installation
 The installation of this tool is pretty easy, just follow the steps below:
@@ -27,12 +29,7 @@ You can start the application by using the application menu launcher or the `spo
 <img src="https://img.shields.io/badge/-Please%20read%20before%20reporting%20an%20issue!-red">
 
 ### The application doesn't start
-If the application doesn't start via the application menu launcher, enter `spotifytools` in your terminal. Most likely, you are **not connected to the internet**, a **dependency is missing** or the app is **already running** somewhere else (note that the application doesn't quit when you close the main window, but minimized to the system tray.).
-
-If any dependencies are missing, try to install them (via the package manager or pip, search the web if you don't know exactly what to do).
-
-### Spotify is not detected
-Note that this app doesn't is not compatible with the Spotify web player. The AUR, Debian and Snap versions should work fine.
+If the application doesn't start via the application menu launcher, enter `spotifytools` in your terminal. Most likely, you are **not connected to the internet**, the app is **already running** in this session (note that the application doesn't quit when you close the main window, but minimized to the system tray. If you can't find it anymore, use `killall spotifytools`), or a **dependency is missing**. If so, try to install them (via the package manager or pip, search the web if you don't know exactly what to do).
 
 ### Advertsiements are not muted
 At the moment, only PulseAudio / PipewirePulse is supported to mute Spotify. If you use another sound system, please open an issue and tell me which one.

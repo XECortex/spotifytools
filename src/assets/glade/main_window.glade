@@ -217,10 +217,13 @@
                           <object class="GtkLabel" id="playing_info">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
+                            <property name="tooltip-markup" translatable="yes">&lt;big&gt;Song Title&lt;/big&gt;
+&lt;small&gt;by&lt;/small&gt; Artist
+&lt;small&gt;on&lt;/small&gt; Album</property>
                             <property name="halign">start</property>
                             <property name="label" translatable="yes">&lt;big&gt;Song Title&lt;/big&gt;
-Artist
-Album</property>
+&lt;small&gt;by&lt;/small&gt; Artist
+&lt;small&gt;on&lt;/small&gt; Album</property>
                             <property name="use-markup">True</property>
                             <property name="ellipsize">end</property>
                           </object>

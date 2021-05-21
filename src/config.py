@@ -16,7 +16,6 @@ class ConfigUpdateEventHandler(RegexMatchingEventHandler):
 
         RegexMatchingEventHandler.__init__(self, regexes=['.*config\.ini'], ignore_directories=True)
 
-
     def on_any_event(self, event):
         if event.event_type == 'modified':
             return
@@ -36,7 +35,6 @@ class Config():
         self.load()
         self.file_watcher.schedule(ConfigUpdateEventHandler(self), self.config_dir)
         self.file_watcher.start()
-
 
     def load(self):
         # Config dir and config file path
@@ -67,7 +65,6 @@ class Config():
 
         self.changes += 1
 
-
     def _parse_args(self):
         # Argument parser
         parser = argparse.ArgumentParser(prog='spotifytools', description='A GTK application written in Python that displays song lyrics and mutes Spotify advertisements', epilog='flag names may change in the future')
@@ -80,12 +77,10 @@ class Config():
 
         self.args = parser.parse_args()
 
-
     def _write_config(self):
         with open(self.config_path, 'w') as f:
             with open(f'{util.get_dirname(__file__)}/assets/default_config.ini', 'r') as default_config_file:
                 f.write(default_config_file.read())
-
 
     def _read_config(self, rec=False):
         try:
@@ -110,14 +105,11 @@ class Config():
             self._write_config()
             self._read_config(True)
 
-
     def _str_to_bool(self, s):
         return s.lower() in ['true', 'on', 'yes']
 
-
     def _overwrite(self, a, b, c):
         return False if c else True if b else a
-
 
     def update_option(self, section, option, value = None):
         if not self.config.has_section(section):
@@ -127,7 +119,6 @@ class Config():
         self.config.set(section, option, value)
 
         with open(self.config_path, 'w') as f: self.config.write(f)
-
 
     def stop_file_watcher(self):
         self.file_watcher.stop()

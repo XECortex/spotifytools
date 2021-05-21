@@ -27,9 +27,24 @@
     <property name="can-focus">False</property>
     <property name="icon-name">spotify-indicator</property>
   </object>
+  <object class="GtkImage" id="spotifytools">
+    <property name="visible">True</property>
+    <property name="can-focus">False</property>
+    <property name="icon-name">spotifytools</property>
+  </object>
   <object class="GtkMenu" id="tray_menu">
     <property name="visible">True</property>
     <property name="can-focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem">
+        <property name="label" translatable="yes">SpotifyTools</property>
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="can-focus">False</property>
+        <property name="image">spotifytools</property>
+        <property name="use-stock">False</property>
+      </object>
+    </child>
     <child>
       <object class="GtkImageMenuItem" id="open">
         <property name="label" translatable="yes">Open</property>
